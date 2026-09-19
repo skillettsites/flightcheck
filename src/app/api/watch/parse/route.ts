@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const msg = await client.messages.create({
       model: process.env.PARSE_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: 800,
-      system: `Extract airline flights from a booking confirmation. Today is ${today}. Return STRICT JSON only: {"flights":[{"flightNumber":"BA117","date":"YYYY-MM-DD","from":"LHR","to":"JFK","passengers":2}]}. flightNumber = IATA airline code + digits with no space. date = local departure date. from/to = IATA codes if present, else null. passengers = number of named passengers if shown, else 1. If a year is missing, choose the next occurrence on or after today. Ignore hotels, cars and trains. If nothing is found return {"flights":[]}.`,
+      system: `Extract airline flights from a booking confirmation. Today is ${today}. Return STRICT JSON only: {"flights":[{"flightNumber":"BA117","date":"YYYY-MM-DD","from":"LHR","to":"JFK","passengers":2}]}. flightNumber = the two-character IATA airline code plus digits with no space (U28160, not EZY8160; FR1234, not RYR1234; BA117, not BAW117). Convert ICAO three-letter codes to IATA. date = local departure date. from/to = IATA codes if present, else null. passengers = number of named passengers if shown, else 1. If a year is missing, choose the next occurrence on or after today. Ignore hotels, cars and trains. If nothing is found return {"flights":[]}.`,
       messages: [{ role: "user", content: text }],
     });
     const raw = msg.content.filter((b) => b.type === "text").map((b) => (b as { text: string }).text).join("");

@@ -49,9 +49,23 @@ export const AIRLINES: Record<string, Airline> = {
   DT: { name: "TAAG Angola", country: "AO" },
 };
 
+// Booking emails and boarding passes often print the ICAO airline code (EZY8160) rather than the IATA one (U28160).
+export const ICAO_TO_IATA: Record<string, string> = {
+  EZY: "U2", EJU: "EC", EZS: "DS", RYR: "FR", RUK: "RK", BAW: "BA", CFE: "CJ", SHT: "BA", EXS: "LS", TOM: "BY", VIR: "VS", WZZ: "W6", WUK: "W9", WMT: "W4",
+  EIN: "EI", EUK: "EG", DLH: "LH", CLH: "CL", AFR: "AF", KLM: "KL", UAE: "EK", QTR: "QR", ETD: "EY", THY: "TK", PGT: "PC", SXS: "XQ", IBE: "IB", IBS: "I2", VLG: "VY", AEA: "UX",
+  TAP: "TP", ITY: "AZ", SAS: "SK", FIN: "AY", NAX: "DY", NSZ: "D8", LOT: "LO", CSA: "OK", ROT: "RO", AEE: "A3", OAL: "OA", TRA: "HV", TVF: "TO", EWG: "EW", CFG: "DE",
+  TUI: "X3", TFL: "OR", JAF: "TB", BTI: "BT", ICE: "FI", LOG: "LM", EZE: "T3", AUA: "OS", SWR: "LX", BEL: "SN", AAL: "AA", UAL: "UA", DAL: "DL", JBU: "B6", ASA: "AS",
+  ACA: "AC", WJA: "WS", TSC: "TS", POE: "PD", AFL: "SU", ELY: "LY", ETH: "ET", KAL: "KE", JAL: "JL", ANA: "NH", CPA: "CX", SIA: "SQ", QFA: "QF", ANZ: "NZ", MSR: "MS",
+  RJA: "RJ", SVA: "SV", KQA: "KQ", AIC: "AI", MAS: "MH", THA: "TG", FDB: "FZ", ABY: "G9", EDW: "WK", VOE: "V7", CTN: "OU", ASL: "JU", KMM: "KM", LGL: "LG",
+};
+
 export function parseFlightNumber(input: string): { airline: string; number: string; full: string } | null {
   const s = input.toUpperCase().replace(/\s+/g, "");
-  const m = s.match(/^([A-Z0-9]{2})(\d{1,4})[A-Z]?$/);
+  let m = s.match(/^([A-Z0-9]{2})(\d{1,4})[A-Z]?$/);
+  if (!m) {
+    const i = s.match(/^([A-Z]{3})(\d{1,4})[A-Z]?$/);
+    if (i && ICAO_TO_IATA[i[1]]) m = [i[0], ICAO_TO_IATA[i[1]], i[2]] as unknown as RegExpMatchArray;
+  }
   if (!m) return null;
   return { airline: m[1], number: String(parseInt(m[2], 10)), full: `${m[1]}${parseInt(m[2], 10)}` };
 }

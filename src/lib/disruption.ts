@@ -1,4 +1,4 @@
-import { sbRpc, sbSelect } from "./supabase";
+import { sbRpc, sbSelect, sbSelectAll } from "./supabase";
 import type { AirportDayDelay } from "./eurocontrol";
 
 export interface CoveredAirportRow {
@@ -62,8 +62,8 @@ export async function worstDaysSince(sinceDay: string, minDelay: number, limit =
 /** Significant days for the sitemap: UK/IE >= 300 min, elsewhere >= 1000 min. */
 export async function significantDays(): Promise<{ icao: string; day: string }[]> {
   const [ukie, eu] = await Promise.all([
-    sbSelect<{ icao: string; day: string }>("fcc_apt_delay_daily", `select=icao,day&delay_min=gte.${UKIE_MIN_DELAY}&or=(icao.like.EG*,icao.like.EI*)&order=day.desc&limit=10000`),
-    sbSelect<{ icao: string; day: string }>("fcc_apt_delay_daily", `select=icao,day&delay_min=gte.${EU_MIN_DELAY}&not.or=(icao.like.EG*,icao.like.EI*)&order=day.desc&limit=20000`),
+    sbSelectAll<{ icao: string; day: string }>("fcc_apt_delay_daily", `select=icao,day&delay_min=gte.${UKIE_MIN_DELAY}&or=(icao.like.EG*,icao.like.EI*)&order=day.desc,icao.asc`),
+    sbSelectAll<{ icao: string; day: string }>("fcc_apt_delay_daily", `select=icao,day&delay_min=gte.${EU_MIN_DELAY}&not.or=(icao.like.EG*,icao.like.EI*)&order=day.desc,icao.asc`),
   ]);
   return [...ukie, ...eu];
 }

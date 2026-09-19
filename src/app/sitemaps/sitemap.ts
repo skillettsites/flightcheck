@@ -12,7 +12,9 @@ export async function generateSitemaps() {
   return Array.from({ length: n + 1 }, (_, i) => ({ id: i }));
 }
 
-export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
+// Next 15+ hands the id over as a promise at request time.
+export default async function sitemap({ id: rawId }: { id: Promise<string | number> | string | number }): Promise<MetadataRoute.Sitemap> {
+  const id = Number(String(await rawId).replace(/\.xml$/, ""));
   const now = new Date();
   if (id === 0) {
     const core = ["", "/watch", "/how-it-works", "/your-rights", "/uk261-compensation", "/eu261-compensation", "/flight-delay-compensation-calculator", "/airlines", "/airport-delays", "/pricing", "/refunds", "/terms", "/privacy", "/contact"].map((p) => ({

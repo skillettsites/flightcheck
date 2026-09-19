@@ -22,6 +22,21 @@ export async function sbSelect<T>(table: string, query: string): Promise<T[]> {
   return (await res.json()) as T[];
 }
 
+/** Page through a large result set; Supabase caps a single response at 1,000 rows. */
+export async function sbSelectAll<T>(table: string, query: string, pageSize = 1000, maxRows = 60000): Promise<T[]> {
+  if (!supabaseConfigured()) return [];
+  const out: T[] = [];
+  for (let start = 0; start < maxRows; start += pageSize) {
+    const res = await fetch(`${URL}/rest/v1/${table}?${query}`, { headers: headers({ Range: `${start}-${start + pageSize - 1}`, "Range-Unit": "items" }), cache: "no-store" });
+    if (!res.ok && res.status !== 416) { console.error("supabase selectAll failed", table, res.status, await res.text().catch(() => "")); break; }
+    if (res.status === 416) break;
+    const rows = (await res.json()) as T[];
+    out.push(...rows);
+    if (rows.length < pageSize) break;
+  }
+  return out;
+}
+
 export async function sbInsert(table: string, row: Record<string, unknown>): Promise<boolean> {
   if (!supabaseConfigured()) return false;
   const res = await fetch(`${URL}/rest/v1/${table}`, {
