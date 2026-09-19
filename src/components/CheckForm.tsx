@@ -38,7 +38,7 @@ export default function CheckForm({ compact = false, defaultDate = "" }: { compa
 
   return (
     <form onSubmit={submit} className="card" id={compact ? undefined : "check"} style={{ padding: compact ? 20 : 24, display: "grid", gap: 16, borderRadius: 24, boxShadow: "var(--shadow-lg)" }} aria-label="Check a flight">
-      <div className="grid-2" style={{ gap: 14 }}>
+      <div className="grid-2 check-fields" style={{ gap: 14 }}>
         <div className="field">
           <label htmlFor="flight">Flight number</label>
           <input id="flight" className="input" placeholder="e.g. BA117" value={flight} onChange={(e) => setFlight(e.target.value)} required autoComplete="off" inputMode="text" />
