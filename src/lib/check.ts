@@ -1,4 +1,5 @@
-import { adbUtc, fetchFlight, type AdbFlight } from "./aerodatabox";
+import { adbUtc, fetchFlight, fetchTypicalArrivalIata } from "./aerodatabox";
+import { resolveDiversion } from "./diversion";
 import { airportByIata, airportByIcao, greatCircleKm, type Airport } from "./airports";
 import { airlineByCode, parseFlightNumber } from "./airlines";
 import { adrFor, AIRLINE_CLAIM_PAGES, type AdrRoute } from "./adr";
@@ -12,6 +13,7 @@ export interface CheckInput {
   date: string; // YYYY-MM-DD local departure date
   disruption: Disruption;
   departureIata?: string; // disambiguates multi-leg flight numbers
+  bookedArrivalIata?: string; // passenger's booked destination when the record diverted
   noticeDays?: number | null; // cancellations only
   reroutedWithinLimits?: boolean | null; // cancellations only
   passengers?: number;
@@ -32,11 +34,13 @@ export interface CheckResult {
     status: string;
     departure: { airport: Airport | null; icao: string | null; scheduledUtc: string | null; actualUtc: string | null; scheduledLocal: string | null; actualLocal: string | null };
     arrival: { airport: Airport | null; icao: string | null; scheduledUtc: string | null; actualUtc: string | null; scheduledLocal: string | null; actualLocal: string | null; actualBasis: "gate" | "runway" | null };
+    diversionAirport: { airport: Airport | null; icao: string | null; iata: string | null } | null;
     distanceKm: number | null;
     arrivalDelayMin: number | null;
     departureDelayMin: number | null;
     cancelled: boolean;
     diverted: boolean;
+    finalArrivalUnverified: boolean;
     dataSource: "AeroDataBox";
   };
   regimes: RegimeCoverage[];
@@ -52,15 +56,12 @@ export interface CheckResult {
   generatedAt: string;
 }
 
-function pickLeg(flights: AdbFlight[], departureIata?: string): AdbFlight {
-  const pax = flights.filter((f) => !f.isCargo);
-  const list = pax.length ? pax : flights;
-  if (departureIata) {
-    const m = list.find((f) => f.departure.airport?.iata?.toUpperCase() === departureIata.toUpperCase());
-    if (m) return m;
-  }
-  // prefer the operated leg over codeshares, then the first
-  return list.find((f) => f.codeshareStatus === "IsOperator") ?? list[0];
+export interface CheckDeps {
+  fetchFlight?: typeof fetchFlight;
+  fetchTypicalArrivalIata?: typeof fetchTypicalArrivalIata;
+  airportDay?: typeof airportDay;
+  weatherAround?: typeof weatherAround;
+  weatherWindow?: typeof weatherWindow;
 }
 
 function minutesBetween(a: Date | null, b: Date | null): number | null {
@@ -68,22 +69,33 @@ function minutesBetween(a: Date | null, b: Date | null): number | null {
   return Math.round((b.getTime() - a.getTime()) / 60000);
 }
 
-export async function runCheck(input: CheckInput): Promise<CheckResult | { error: string; status: number }> {
+export async function runCheck(input: CheckInput, deps: CheckDeps = {}): Promise<CheckResult | { error: string; status: number }> {
   const parsed = parseFlightNumber(input.flightNumber);
   if (!parsed) return { error: "That does not look like a flight number. Try the airline code and number, for example BA117 or FR1234.", status: 400 };
   if (!/^\d{4}-\d{2}-\d{2}$/.test(input.date)) return { error: "Date must be YYYY-MM-DD.", status: 400 };
 
-  const fetched = await fetchFlight(parsed.full, input.date);
+  const fetched = await (deps.fetchFlight ?? fetchFlight)(parsed.full, input.date);
   if ("error" in fetched) return fetched;
   if (!fetched.length) return { error: "No flight found for that number and date.", status: 404 };
-  const f = pickLeg(fetched, input.departureIata);
+
+  let resolved = resolveDiversion(fetched, { departureIata: input.departureIata, bookedArrivalIata: input.bookedArrivalIata });
+  const cancelledEarly = /cancel/i.test(resolved.primary.status);
+  if (!resolved.diverted && !input.bookedArrivalIata && !cancelledEarly) {
+    const typical = await (deps.fetchTypicalArrivalIata ?? fetchTypicalArrivalIata)(parsed.full, input.date, resolved.originIata);
+    if (typical) resolved = resolveDiversion(fetched, { departureIata: input.departureIata, bookedArrivalIata: input.bookedArrivalIata, typicalArrivalIata: typical });
+  }
+  const f = resolved.primary;
 
   const depAirport = airportByIata(f.departure.airport?.iata) ?? airportByIcao(f.departure.airport?.icao) ?? null;
-  const arrAirport = airportByIata(f.arrival.airport?.iata) ?? airportByIcao(f.arrival.airport?.icao) ?? null;
+  const bookedIata = resolved.bookedIata ?? resolved.operatingIata;
+  const arrAirport = airportByIata(bookedIata) ?? airportByIata(resolved.delayLeg.arrival.airport?.iata) ?? airportByIcao(resolved.delayLeg.arrival.airport?.icao) ?? null;
+  const diversionAirport = resolved.diverted && resolved.diversionIata
+    ? { airport: airportByIata(resolved.diversionIata) ?? null, icao: airportByIata(resolved.diversionIata)?.icao ?? null, iata: resolved.diversionIata }
+    : null;
   const depIcao = f.departure.airport?.icao ?? depAirport?.icao ?? null;
-  const arrIcao = f.arrival.airport?.icao ?? arrAirport?.icao ?? null;
+  const arrIcao = arrAirport?.icao ?? resolved.delayLeg.arrival.airport?.icao ?? null;
   const depCountry = depAirport?.country ?? f.departure.airport?.countryCode ?? "";
-  const arrCountry = arrAirport?.country ?? f.arrival.airport?.countryCode ?? "";
+  const arrCountry = arrAirport?.country ?? resolved.delayLeg.arrival.airport?.countryCode ?? "";
 
   const airlineCode = (f.airline?.iata ?? parsed.airline).toUpperCase();
   const airline = airlineByCode(airlineCode);
@@ -93,23 +105,19 @@ export async function runCheck(input: CheckInput): Promise<CheckResult | { error
   const schedDep = adbUtc(f.departure.scheduledTime);
   const depGate = adbUtc(f.departure.revisedTime), depRunway = adbUtc(f.departure.runwayTime);
   const actDep = depGate && depRunway ? (depGate.getTime() >= depRunway.getTime() ? depRunway : depGate) : depGate ?? depRunway;
-  const schedArr = adbUtc(f.arrival.scheduledTime);
-  // revisedTime is the gate time when the feed updated it, but it is often left at the schedule
-  // while runwayTime carries the real touchdown. Touchdown always precedes the gate, so the later
-  // of the two is the truthful floor for the arrival time, and "runway" basis is flagged in the UI.
-  const gateArr = adbUtc(f.arrival.revisedTime);
-  const runwayArr = adbUtc(f.arrival.runwayTime);
-  const gateTrustworthy = gateArr && (!runwayArr || gateArr.getTime() >= runwayArr.getTime());
-  const actArr = gateTrustworthy ? gateArr : runwayArr ?? gateArr;
-  const actualBasis: "gate" | "runway" | null = actArr ? (gateTrustworthy ? "gate" : "runway") : null;
+  const schedArr = resolved.scheduledUtc;
+  const actArr = resolved.actualUtc;
+  const actualBasis = resolved.actualBasis;
 
   const cancelled = /cancel/i.test(f.status);
-  const diverted = /divert/i.test(f.status);
-  const arrived = /arrived/i.test(f.status) || (!!actArr && !cancelled);
-  const arrivalDelayMin = cancelled ? null : arrived ? minutesBetween(schedArr, actArr) : null;
+  const diverted = resolved.diverted;
+  const arrivalDelayMin = cancelled ? null : resolved.arrivalDelayMin;
   const departureDelayMin = minutesBetween(schedDep, actDep);
-
-  const distanceKm = f.greatCircleDistance?.km ?? (depAirport && arrAirport ? Math.round(greatCircleKm(depAirport, arrAirport)) : null);
+  const bookedForDistance = airportByIata(resolved.bookedIata) ?? arrAirport;
+  const distanceKm =
+    (depAirport && bookedForDistance && resolved.bookedIata && resolved.bookedIata !== resolved.operatingIata
+      ? Math.round(greatCircleKm(depAirport, bookedForDistance))
+      : f.greatCircleDistance?.km) ?? (depAirport && arrAirport ? Math.round(greatCircleKm(depAirport, arrAirport)) : null);
 
   const regimes = coverage({ depCountry, arrCountry, carrierCountry: airlineCountry ?? undefined });
   const intraEu = isEuRegime(depCountry) && isEuRegime(arrCountry);
@@ -123,21 +131,27 @@ export async function runCheck(input: CheckInput): Promise<CheckResult | { error
     eligibility = cancellationEligibility({ noticeDays: input.noticeDays ?? null, rerouteOfferedWithinLimits: input.reroutedWithinLimits ?? null });
   } else if (disruption === "denied_boarding") {
     eligibility = { status: "eligible", reason: "Denied boarding against your will (overbooking) carries fixed compensation under Art 4 with no extraordinary-circumstances defence, provided you checked in on time and were not denied for a reason such as documents or safety." };
+  } else if (resolved.finalArrivalUnverified) {
+    eligibility = { status: "unclear", reason: resolved.note };
   } else {
     eligibility = delayEligibility(arrivalDelayMin);
   }
 
   // Evidence layer: the airport-attributed delay record and airport weather for the day.
   const day = input.date;
-  // Eurocontrol rows in parallel (Supabase), weather strictly one at a time (IEM rate-limits bursts).
-  const [arrEvidence, depEvidence] = await Promise.all([
-    arrIcao ? airportDay(arrIcao, schedArr ? schedArr.toISOString().slice(0, 10) : day) : Promise.resolve(null),
-    depIcao ? airportDay(depIcao, day) : Promise.resolve(null),
-  ]);
-  const wxDep = depIcao && schedDep ? await weatherAround(depIcao, schedDep) : null;
-  const arrRef = schedArr ?? actArr;
-  const wxArr = arrIcao && arrRef && arrIcao !== depIcao
-    ? await weatherWindow(arrIcao, new Date(arrRef.getTime() - 4 * 3600_000), new Date(Math.max(arrRef.getTime(), (actArr ?? arrRef).getTime()) + 3600_000))
+  const airportDayFn = deps.airportDay ?? airportDay;
+  const weatherAroundFn = deps.weatherAround ?? weatherAround;
+  const weatherWindowFn = deps.weatherWindow ?? weatherWindow;
+  const evidenceIcaos = [...new Set([arrIcao, diversionAirport?.icao, depIcao].filter((x): x is string => !!x))];
+  const evidenceRows = await Promise.all(evidenceIcaos.map((icao) => airportDayFn(icao, icao === depIcao ? day : (schedArr ? schedArr.toISOString().slice(0, 10) : day))));
+  const byIcao = new Map(evidenceIcaos.map((icao, i) => [icao, evidenceRows[i]]));
+  const arrEvidence = arrIcao ? byIcao.get(arrIcao) ?? null : null;
+  const depEvidence = depIcao ? byIcao.get(depIcao) ?? null : null;
+  const wxDep = depIcao && schedDep ? await weatherAroundFn(depIcao, schedDep) : null;
+  const arrRef = schedArr ?? actArr ?? adbUtc(f.arrival.revisedTime) ?? adbUtc(f.arrival.scheduledTime);
+  const wxStation = resolved.finalArrivalUnverified ? (diversionAirport?.icao ?? arrIcao) : arrIcao;
+  const wxArr = wxStation && arrRef && wxStation !== depIcao
+    ? await weatherWindowFn(wxStation, new Date(arrRef.getTime() - 4 * 3600_000), new Date(Math.max(arrRef.getTime(), (actArr ?? arrRef).getTime()) + 3600_000))
     : null;
   const evidence: Evidence = {
     arrivalAirport: arrIcao && arrEvidence ? { icao: arrIcao, covered: arrEvidence.covered, row: arrEvidence.row, causes: summariseCauses(arrEvidence.row) } : null,
@@ -164,12 +178,14 @@ export async function runCheck(input: CheckInput): Promise<CheckResult | { error
       airline: { code: airlineCode, name: f.airline?.name ?? airline?.name ?? airlineCode, country: airlineCountry, ukOrEuCarrier },
       status: f.status,
       departure: { airport: depAirport, icao: depIcao, scheduledUtc: schedDep?.toISOString() ?? null, actualUtc: actDep?.toISOString() ?? null, scheduledLocal: f.departure.scheduledTime?.local ?? null, actualLocal: f.departure.revisedTime?.local ?? f.departure.runwayTime?.local ?? null },
-      arrival: { airport: arrAirport, icao: arrIcao, scheduledUtc: schedArr?.toISOString() ?? null, actualUtc: actArr?.toISOString() ?? null, scheduledLocal: f.arrival.scheduledTime?.local ?? null, actualLocal: (actualBasis === "gate" ? f.arrival.revisedTime?.local : f.arrival.runwayTime?.local) ?? f.arrival.revisedTime?.local ?? null, actualBasis },
+      arrival: { airport: arrAirport, icao: arrIcao, scheduledUtc: schedArr?.toISOString() ?? null, actualUtc: actArr?.toISOString() ?? null, scheduledLocal: resolved.scheduledLocal, actualLocal: resolved.actualLocal, actualBasis },
+      diversionAirport,
       distanceKm: distanceKm !== null ? Math.round(distanceKm) : null,
       arrivalDelayMin,
       departureDelayMin,
       cancelled,
       diverted,
+      finalArrivalUnverified: resolved.finalArrivalUnverified,
       dataSource: "AeroDataBox",
     },
     regimes,
@@ -206,24 +222,26 @@ export function decide(eligibility: Eligibility, defenceRisk: CheckResult["defen
  * cancellation came with (and whether a re-route was offered), or that the passenger was bumped
  * from a flight that ran. No flight, Eurocontrol or METAR fetches; the evidence is reused as is.
  */
-export function refineCheck(prev: CheckResult, patch: { noticeDays?: number | null; reroutedWithinLimits?: boolean | null; deniedBoarding?: boolean }): CheckResult {
+export function refineCheck(prev: CheckResult, patch: { noticeDays?: number | null; reroutedWithinLimits?: boolean | null; deniedBoarding?: boolean; bookedArrivalIata?: string }): CheckResult {
   const input: CheckInput = {
     ...prev.input,
     disruption: patch.deniedBoarding ? "denied_boarding" : prev.flight.cancelled ? "cancellation" : prev.input.disruption,
     noticeDays: patch.noticeDays !== undefined ? patch.noticeDays : prev.input.noticeDays,
     reroutedWithinLimits: patch.reroutedWithinLimits !== undefined ? patch.reroutedWithinLimits : prev.input.reroutedWithinLimits,
+    bookedArrivalIata: patch.bookedArrivalIata ? patch.bookedArrivalIata.trim().toUpperCase() : prev.input.bookedArrivalIata,
   };
   let eligibility: Eligibility;
   if (prev.regimes.length === 0) eligibility = prev.eligibility;
   else if (input.disruption === "denied_boarding") eligibility = { status: "eligible", reason: "Denied boarding against your will (overbooking) carries fixed compensation under Art 4 with no extraordinary-circumstances defence, provided you checked in on time and were not denied for a reason such as documents or safety." };
   else if (input.disruption === "cancellation") eligibility = cancellationEligibility({ noticeDays: input.noticeDays ?? null, rerouteOfferedWithinLimits: input.reroutedWithinLimits ?? null });
+  else if (prev.flight.finalArrivalUnverified && !patch.deniedBoarding) eligibility = { status: "unclear", reason: prev.eligibility.reason };
   else eligibility = delayEligibility(prev.flight.arrivalDelayMin);
   const defenceRisk = assessDefenceRisk(prev.evidence, input.disruption);
   const { verdict, headline } = decide(eligibility, defenceRisk, prev.bands);
   return { ...prev, input, eligibility, defenceRisk, verdict, headline, generatedAt: new Date().toISOString() };
 }
 
-function assessDefenceRisk(e: Evidence, disruption: Disruption): CheckResult["defenceRisk"] {
+export function assessDefenceRisk(e: Evidence, disruption: Disruption): CheckResult["defenceRisk"] {
   if (disruption === "denied_boarding") return { level: "low", summary: "Overbooking has no extraordinary-circumstances defence." };
   const signals: string[] = [];
   let score = 0;

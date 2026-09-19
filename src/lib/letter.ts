@@ -20,7 +20,7 @@ function facts(r: CheckResult, c: Customer): string {
   const lines = [
     `Flight: ${r.flight.number} operated by ${r.flight.airline.name} (${r.flight.airline.code})`,
     `Date of travel: ${r.input.date}`,
-    `Route: ${dep.airport?.name ?? dep.icao} (${dep.airport?.iata ?? ""}) to ${arr.airport?.name ?? arr.icao} (${arr.airport?.iata ?? ""})`,
+    `Route: ${dep.airport?.name ?? dep.icao} (${dep.airport?.iata ?? ""}) to ${arr.airport?.name ?? arr.icao} (${arr.airport?.iata ?? ""})${r.flight.diverted && r.flight.diversionAirport?.iata ? `; diverted via ${r.flight.diversionAirport.iata}` : ""}`,
     `Great-circle distance: ${r.flight.distanceKm} km (band: ${band?.bandLabel ?? "n/a"})`,
     `Scheduled departure (local): ${dep.scheduledLocal}; actual: ${dep.actualLocal ?? "n/a"}`,
     `Scheduled arrival (local): ${arr.scheduledLocal}; actual ${arr.actualBasis === "runway" ? "touchdown" : "gate arrival"}: ${arr.actualLocal ?? "n/a"}`,

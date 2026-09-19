@@ -28,7 +28,7 @@ export default function VerdictBoard({ r }: { r: CheckResult }) {
       <p id="verdict" className="verdict-line">{r.headline}</p>
       <p className="small muted" style={{ margin: "0 0 12px", maxWidth: "70ch" }}>{r.eligibility.reason}</p>
 
-      <div className="board-row"><span className="board-key">Route</span><span className="board-val dim">{dep.airport?.iata ?? dep.icao} → {arr.airport?.iata ?? arr.icao}</span></div>
+      <div className="board-row"><span className="board-key">Route</span><span className="board-val dim">{dep.airport?.iata ?? dep.icao} → {arr.airport?.iata ?? arr.icao}{r.flight.diverted && r.flight.diversionAirport?.iata ? ` (diverted via ${r.flight.diversionAirport.iata})` : ""}</span></div>
       <div className="board-row"><span className="board-key">Scheduled arrival</span><span className="board-val dim">{local(arr.scheduledLocal)}</span></div>
       <div className="board-row"><span className="board-key">{r.flight.cancelled ? "Status" : arr.actualBasis === "runway" ? "Actual touchdown" : "Actual arrival (gate)"}</span><span className="board-val">{r.flight.cancelled ? "CANCELLED" : local(arr.actualLocal)}</span></div>
       {!r.flight.cancelled && <div className="board-row"><span className="board-key">Arrival delay</span><span className="board-val">{r.flight.arrivalDelayMin !== null ? fmtMin(r.flight.arrivalDelayMin) : "n/a"}</span></div>}

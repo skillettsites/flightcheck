@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
     date: String(body.date || "").trim(),
     disruption,
     departureIata: body.departureIata ? String(body.departureIata).trim().toUpperCase() : undefined,
+    bookedArrivalIata: body.bookedArrivalIata ? String(body.bookedArrivalIata).trim().toUpperCase() : undefined,
     noticeDays: typeof body.noticeDays === "number" ? body.noticeDays : body.noticeDays === null ? null : undefined,
     reroutedWithinLimits: typeof body.reroutedWithinLimits === "boolean" ? body.reroutedWithinLimits : undefined,
     passengers: Math.min(9, Math.max(1, Number(body.passengers) || 1)),

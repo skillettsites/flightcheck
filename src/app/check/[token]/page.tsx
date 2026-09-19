@@ -6,7 +6,7 @@ import type { CheckResult } from "@/lib/check";
 import VerdictBoard from "@/components/VerdictBoard";
 import EvidencePanel from "@/components/EvidencePanel";
 import BuyBox from "@/components/BuyBox";
-import { CancellationRefine, DeniedBoardingLink } from "@/components/RefineForm";
+import { CancellationRefine, DeniedBoardingLink, DiversionRefine } from "@/components/RefineForm";
 
 export const dynamic = "force-dynamic";
 
@@ -70,7 +70,18 @@ export default async function CheckPage({ params, searchParams }: { params: Prom
         </section>
       )}
 
-      {r.verdict === "unclear" && !r.flight.cancelled && (
+      {r.verdict === "unclear" && !r.flight.cancelled && r.flight.diverted && (
+        <section className="notice" style={{ marginTop: 22 }}>
+          <span className="eyebrow">Diversion</span>
+          <div>
+            <p style={{ margin: 0, fontWeight: 600 }}>This flight diverted. Delay is measured at the airport you were booked to, not the diversion landing.</p>
+            <p className="small muted" style={{ margin: "6px 0 12px" }}>{r.eligibility.reason}</p>
+            <DiversionRefine token={token} />
+          </div>
+        </section>
+      )}
+
+      {r.verdict === "unclear" && !r.flight.cancelled && !r.flight.diverted && (
         <section className="notice" style={{ marginTop: 22 }}>
           <span className="eyebrow">Record gap</span>
           <div>

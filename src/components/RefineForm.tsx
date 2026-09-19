@@ -69,3 +69,34 @@ export function DeniedBoardingLink({ token }: { token: string }) {
     </button>
   );
 }
+
+export function DiversionRefine({ token }: { token: string }) {
+  const router = useRouter();
+  const [iata, setIata] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const code = iata.trim().toUpperCase();
+    if (!/^[A-Z]{3}$/.test(code)) { setError("Enter the three-letter airport code you were booked to, for example VCE."); return; }
+    setBusy(true); setError(null);
+    try {
+      const res = await fetch("/api/check/refine", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token, bookedArrivalIata: code }) });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || "Something went wrong."); setBusy(false); return; }
+      router.push(`/check/${data.token}`);
+    } catch { setError("Could not save that. Please try again."); setBusy(false); }
+  }
+
+  return (
+    <form onSubmit={submit} style={{ display: "grid", gap: 10, maxWidth: 280 }}>
+      <div className="field">
+        <label htmlFor="booked">Booked destination code</label>
+        <input id="booked" className="input mono" placeholder="VCE" maxLength={3} value={iata} onChange={(e) => setIata(e.target.value)} autoComplete="off" />
+      </div>
+      {error && <p role="alert" className="small" style={{ color: "var(--stop)", margin: 0 }}>{error}</p>}
+      <button className="btn btn-accent" type="submit" disabled={busy} style={{ justifySelf: "start" }}>{busy ? "Checking…" : "Check that destination"}</button>
+    </form>
+  );
+}
