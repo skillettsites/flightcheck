@@ -59,7 +59,10 @@ export default async function Home() {
         <div>
           <h1>See if you’re owed money for a delayed flight.</h1>
           <p className="muted hero-sub">
-            Check the official flight record, free. If there is a claim, buy a letter for £4.99 and send it yourself.
+            The free check applies UK261 and EU261, and the leading cases, to your flight’s public record: times, Eurocontrol delay causes and METAR weather. You see whether there is a claim, and how the airline is likely to argue.
+          </p>
+          <p className="small muted" style={{ marginTop: 12, maxWidth: "42ch" }}>
+            If there is a claim, a letter is £4.99. You send it yourself.
           </p>
         </div>
         <CheckForm />
@@ -68,24 +71,24 @@ export default async function Home() {
       <section className="wrap" style={{ paddingTop: 8, paddingBottom: 8 }}>
         <div className="steps">
           <div className="step">
-            <span className="step-icon"><IconSearch /></span>
+            <span className="step-icon"><IconLetter /></span>
             <div>
-              <h3>Check free</h3>
-              <p className="small muted" style={{ margin: 0 }}>See whether the delay or cancellation qualifies. No sign-up, and the airline is not contacted.</p>
+              <h3>Rules on your flight</h3>
+              <p className="small muted" style={{ margin: 0 }}>UK261, EU261 and the leading cases applied to the route, the airline and the delay. Not a blank form.</p>
             </div>
           </div>
           <div className="step">
-            <span className="step-icon"><IconLetter /></span>
+            <span className="step-icon"><IconSearch /></span>
             <div>
-              <h3>Get a letter</h3>
-              <p className="small muted" style={{ margin: 0 }}>A ready-to-send UK261 or EU261 letter written from the record, for £4.99.</p>
+              <h3>Evidence for the defence</h3>
+              <p className="small muted" style={{ margin: 0 }}>Public records that answer “extraordinary circumstances”: Eurocontrol delay causes and METAR weather at both airports.</p>
             </div>
           </div>
           <div className="step">
             <span className="step-icon"><IconSend /></span>
             <div>
-              <h3>Send it yourself</h3>
-              <p className="small muted" style={{ margin: 0 }}>You keep the claim and whatever the airline pays. We never take a share.</p>
+              <h3>A letter that uses that</h3>
+              <p className="small muted" style={{ margin: 0 }}>Written from those arguments, for £4.99. You send it. You keep 100% of whatever the airline pays.</p>
             </div>
           </div>
         </div>
@@ -102,6 +105,33 @@ export default async function Home() {
           </div>
         </div>
       )}
+
+      <section className="wrap" style={{ paddingTop: 56 }}>
+        <p className="eyebrow">Built into every check</p>
+        <h2 style={{ marginTop: 8, marginBottom: 22 }}>What you’re actually getting</h2>
+        <div className="grid-2">
+          <div className="card">
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>Rules</p>
+            <h3>UK261 and EU261, by route and airline</h3>
+            <p className="small muted" style={{ margin: 0 }}>Coverage follows who flew and which way. Distance bands, the three-hour arrival test, and the cancellation notice rules, applied to this flight.</p>
+          </div>
+          <div className="card">
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>Case law</p>
+            <h3>The rulings airlines lean on</h3>
+            <p className="small muted" style={{ margin: 0 }}>Technical faults are not extraordinary (<Link href="/airlines/jet2">Huzar v Jet2.com</Link>, van der Lans v KLM). A strike by the airline’s own staff is not either (Airhelp v SAS). Those sit in the check, not in a generic template.</p>
+          </div>
+          <div className="card">
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>Airlines</p>
+            <h3>The patterns each carrier actually uses</h3>
+            <p className="small muted" style={{ margin: 0 }}><Link href="/airlines/british-airways">BA</Link> and technical faults. <Link href="/airlines/ryanair">Ryanair</Link> and ATC. <Link href="/airlines/jet2">Jet2</Link> and Huzar. Each airline page has the routes, the claim form, and the arguments they reach for.</p>
+          </div>
+          <div className="card">
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>Evidence</p>
+            <h3>STA, ATA, ATFM and METAR</h3>
+            <p className="small muted" style={{ margin: 0 }}>Scheduled and actual times from the flight record, Eurocontrol delay by cause, and weather at both airports. The letter can push back because those facts are on the page.</p>
+          </div>
+        </div>
+      </section>
 
       <section className="wrap" style={{ paddingTop: 56 }}>
         <p className="eyebrow">How the check works</p>
@@ -250,7 +280,7 @@ export default async function Home() {
       <style>{`
         .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding-top: 48px; padding-bottom: 36px; }
         .hero h1 { max-width: 14ch; }
-        .hero-sub { font-size: 18px; max-width: 38ch; margin: 16px 0 0; }
+        .hero-sub { font-size: 18px; max-width: 44ch; margin: 16px 0 0; }
         .sample { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: start; }
         .strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .two-col { display: grid; grid-template-columns: 0.9fr 1.4fr; gap: 40px; align-items: start; }

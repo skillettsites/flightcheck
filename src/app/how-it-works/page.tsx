@@ -24,7 +24,7 @@ export default function HowItWorks() {
       </ul>
 
       <h2>3. The engine applies the regulation</h2>
-      <p>Which regulation covers the route and the carrier, whether the arrival delay reaches three hours (or the cancellation notice rules apply), the distance band, the amount per passenger, and the limitation date. Then it grades the airline&apos;s likely &ldquo;extraordinary circumstances&rdquo; defence from the records: low when nothing shows up that day, high when Eurocontrol logged heavy weather or ATC delay at your airports.</p>
+      <p>Which regulation covers the route and the carrier, whether the arrival delay reaches three hours (or the cancellation notice rules apply), the distance band, the amount per passenger, and the limitation date. It applies the leading cases the airlines lean on: technical faults are not extraordinary (Huzar v Jet2.com, van der Lans v KLM), nor is a strike by the airline&apos;s own staff (Airhelp v SAS). Then it grades the likely &ldquo;extraordinary circumstances&rdquo; defence from the records: low when nothing shows up that day, high when Eurocontrol logged heavy weather or ATC delay at your airports.</p>
 
       <h2>4. You decide</h2>
       <p>The verdict page is free and stays free. If you want the letter, it is £4.99, written from the verified facts with the regulation, the article, the amount, the anticipated defence and the evidence in it. The £9.99 pack adds the follow-up letter for a refusal, the evidence appendix and the escalation route to the free ADR scheme. You send it. We never contact the airline.</p>
