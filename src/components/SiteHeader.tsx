@@ -13,6 +13,8 @@ export default function SiteHeader() {
           <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, letterSpacing: "-0.01em" }}>FlightDelayCheck</span>
         </Link>
         <nav aria-label="Main" style={{ display: "flex", gap: 22, fontSize: 15, fontWeight: 600 }}>
+          <Link href="/airlines" style={{ textDecoration: "none", color: "var(--ink-2)" }}>Airlines</Link>
+          <Link href="/flight-delay-compensation-calculator" style={{ textDecoration: "none", color: "var(--ink-2)" }}>Calculator</Link>
           <Link href="/how-it-works" style={{ textDecoration: "none", color: "var(--ink-2)" }}>How it works</Link>
           <Link href="/your-rights" style={{ textDecoration: "none", color: "var(--ink-2)" }}>Your rights</Link>
           <Link href="/pricing" style={{ textDecoration: "none", color: "var(--ink-2)" }}>Pricing</Link>

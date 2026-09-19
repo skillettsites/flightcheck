@@ -1,10 +1,22 @@
 import Link from "next/link";
 import CheckForm from "@/components/CheckForm";
 import { PRODUCTS } from "@/lib/products";
+import JsonLd, { faqSchema, orgSchema, productSchema, websiteSchema } from "@/components/JsonLd";
+import { AIRLINE_PAGES } from "@/data/airline-pages";
+
+const HOME_FAQS = [
+  { q: "How late does the flight have to be?", a: "Three hours or more at arrival, measured when the doors open at the gate. Under three hours there is no compensation, though care (meals, drinks, calls) is owed after two hours on a short flight." },
+  { q: "How much is flight delay compensation?", a: "Fixed by distance: £220 (up to 1,500 km), £350 (1,500 to 3,500 km), £520 (over 3,500 km) under UK261; €250, €400 and €600 under EU261. Per passenger, regardless of the fare. Long-haul flights delayed between three and four hours pay half." },
+  { q: "Which flights are covered?", a: "Any flight departing the UK or the EU on any airline, plus flights into the UK on a UK or EU airline and flights into the EU on an EU airline." },
+  { q: "What are extraordinary circumstances?", a: "Events outside the airline's control that could not have been avoided with all reasonable measures: severe weather, air-traffic control restrictions or strikes, security risks, bird strikes. Technical faults, crew shortages, the airline's own staff striking and late inbound aircraft are not extraordinary. The airline has to prove it." },
+  { q: "How far back can I claim?", a: "Six years in England and Wales, five in Scotland. FlightDelayCheck verifies flights from the last 12 months automatically." },
+  { q: "Do I have to use a claims company?", a: "No. Claim directly, and if the airline refuses or ignores you for eight weeks, its approved dispute scheme (CEDR or AviationADR) is free to you and binding on the airline." },
+];
 
 export default function Home() {
   return (
     <>
+      <JsonLd data={[orgSchema(), websiteSchema(), productSchema(), faqSchema(HOME_FAQS)]} />
       <section className="wrap" style={{ paddingTop: 48, paddingBottom: 30 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 40, alignItems: "start" }} className="hero">
           <div>
@@ -71,6 +83,16 @@ export default function Home() {
           ))}
         </div>
         <p className="small muted" style={{ marginTop: 14 }}>One-off payment. Delivered on screen and by email the moment you pay. <Link href="/refunds">Refund policy</Link>.</p>
+      </section>
+
+      <section className="wrap" style={{ paddingTop: 56 }}>
+        <p className="eyebrow">By airline</p>
+        <h2 style={{ marginTop: 8, marginBottom: 6 }}>Your airline decides which flights are covered</h2>
+        <p className="muted measure" style={{ marginBottom: 16 }}>A UK or EU airline is covered flying home to the UK. Emirates, Qatar, Delta or Turkish are covered only on the way out. Each airline page has the routes, bands, claim form and free escalation scheme.</p>
+        <p style={{ display: "flex", flexWrap: "wrap", gap: "8px 10px" }}>
+          {AIRLINE_PAGES.map((a) => <Link key={a.slug} href={`/airlines/${a.slug}`} className="btn btn-ghost" style={{ padding: "8px 14px", fontSize: 14 }}>{a.name}</Link>)}
+          <Link href="/flight-delay-compensation-calculator" className="btn btn-ghost" style={{ padding: "8px 14px", fontSize: 14 }}>Compensation calculator</Link>
+        </p>
       </section>
 
       <section className="wrap" style={{ paddingTop: 56, maxWidth: 820 }}>

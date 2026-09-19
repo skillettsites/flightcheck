@@ -13,6 +13,9 @@ export default function SiteFooter() {
           <p className="eyebrow" style={{ marginBottom: 8 }}>Site</p>
           <p><Link href="/how-it-works">How it works</Link></p>
           <p><Link href="/your-rights">Your rights explained</Link></p>
+          <p><Link href="/uk261-compensation">UK261</Link> · <Link href="/eu261-compensation">EU261</Link></p>
+          <p><Link href="/flight-delay-compensation-calculator">Compensation calculator</Link></p>
+          <p><Link href="/airlines">Airlines</Link></p>
           <p><Link href="/pricing">Pricing</Link></p>
           <p><Link href="/contact">Contact</Link></p>
         </div>

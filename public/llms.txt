@@ -1,0 +1,38 @@
+# FlightDelayCheck
+
+> Free UK261 / EU261 flight compensation check built from three public records (the flight's actual arrival time, Eurocontrol's daily airport delay-by-cause data, and airport METAR weather), followed by an optional ready-to-send claim letter for £4.99 or a claim pack for £9.99. UK-based document service. Not a law firm, not a claims management company, no percentage fees; passengers can claim directly from the airline for free and the site says so on every page.
+
+## What it answers
+
+- Is my delayed or cancelled flight owed compensation under UK261 or EU261, and how much (£220 / £350 / £520 or €250 / €400 / €600 by great-circle distance, per passenger)?
+- Did the flight actually arrive 3 hours or more late? (Verified from the flight record, gate or touchdown time.)
+- Does the airline have a plausible "extraordinary circumstances" defence for that day? (Eurocontrol air-traffic delay causes at both airports and the airport weather observations.)
+- Which regulation covers a route and carrier after Brexit, which ADR scheme (CEDR or AviationADR) hears disputes, and the limitation date.
+
+## Key facts
+
+- Threshold: 3 hours or more at arrival (doors open), Sturgeon C-402/07, Nelson C-581/10.
+- Amounts UK261: £220 up to 1,500 km; £350 for 1,500 to 3,500 km; £520 over 3,500 km (£260 if 3 to 4 hours late). EU261: €250 / €400 / €600 (€300), intra-EU over 1,500 km = €400.
+- Coverage: departing the UK (any airline) = UK261; arriving in the UK on a UK or EU airline = UK261; departing the EU/EEA/Switzerland (any airline) = EU261; arriving in the EU on an EU airline = EU261.
+- Not extraordinary: technical faults (Wallentin-Hermann C-549/07, Huzar v Jet2 [2014] EWCA Civ 791), the airline's own staff strikes (Airhelp v SAS C-28/20), crew shortages, knock-on delays without reserve time (Eglitis C-294/10).
+- Limitation: 6 years England and Wales, 5 Scotland; EU states 1 to 10 years.
+- Free escalation: CEDR (British Airways) or AviationADR (most other airlines) after a final response or 8 weeks of silence.
+
+## Pages
+
+- Home / free check: /
+- How it works (data sources, method): /how-it-works
+- Your rights (article-by-article): /your-rights
+- UK261 explained: /uk261-compensation
+- EU261 explained: /eu261-compensation
+- Compensation calculator by route: /flight-delay-compensation-calculator
+- Airline pages (easyJet, Ryanair, British Airways, Jet2, TUI, Wizz Air, Virgin Atlantic, Aer Lingus, Vueling, KLM, Lufthansa, Emirates, Qatar Airways, Turkish Airlines, Loganair): /airlines
+- Pricing: /pricing (check free; Claim Letter £4.99; Claim Pack £9.99)
+- Terms, privacy, refunds, contact: /terms /privacy /refunds /contact
+
+## Data sources
+
+- Flight records: AeroDataBox (flights within the last 12 months).
+- Airport delay causes: Eurocontrol Performance Review Unit, airport arrival ATFM delay by cause, daily since 2019.
+- Weather: METAR observations via the Iowa Environmental Mesonet archive.
+- Airports: OurAirports.
