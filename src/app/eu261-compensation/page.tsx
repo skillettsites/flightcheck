@@ -21,7 +21,7 @@ export default function EU261() {
     <div className="wrap prose" style={{ paddingTop: 40, paddingBottom: 40, maxWidth: 820 }}>
       <JsonLd data={faqSchema(FAQS)} />
       <p className="eyebrow">Regulation (EC) 261/2004</p>
-      <h1 style={{ fontSize: "clamp(30px,4.5vw,44px)", marginTop: 8 }}>EU261 compensation, explained for 2026</h1>
+      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>EU261 compensation, explained for 2026</h1>
       <p style={{ fontSize: 18 }}>EU261 is the European regulation that pays fixed cash compensation for long delays, cancellations and denied boarding. Twenty years of court rulings have filled in what the text left out. This is the working version.</p>
 
       <h2>Amounts (Article 7)</h2>

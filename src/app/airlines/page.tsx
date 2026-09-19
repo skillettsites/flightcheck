@@ -16,21 +16,20 @@ export default function Airlines() {
   return (
     <div className="wrap" style={{ paddingTop: 40, paddingBottom: 40 }}>
       <p className="eyebrow">Airlines</p>
-      <h1 style={{ fontSize: "clamp(30px,4.5vw,44px)", marginTop: 8 }}>Who covers what, airline by airline</h1>
+      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>Who covers what, airline by airline</h1>
       <p className="muted measure" style={{ fontSize: 18 }}>The airline&apos;s nationality decides whether your flight home is covered. Pick yours for the routes, the bands, the claim page and the escalation scheme.</p>
       {groups.map(([title, blurb, list]) => (
         <section key={title} style={{ marginTop: 32 }}>
           <h2>{title}</h2>
           <p className="muted small">{blurb}</p>
-          <div className="grid-3" style={{ marginTop: 12 }}>
+          <nav className="index" style={{ marginTop: 12 }} aria-label={title}>
             {list.map((a) => (
-              <Link key={a.slug} href={`/airlines/${a.slug}`} className="card" style={{ textDecoration: "none", display: "grid", gap: 6 }}>
-                <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}><strong style={{ fontFamily: "var(--font-display)", fontSize: 18 }}>{a.name}</strong><span className="mono muted small">{a.code}</span></span>
-                <span className="small muted">{a.hubs.slice(0, 3).join(", ")}</span>
-                <span className="small">Escalation: {a.adr === "CAA" ? "CAA" : a.adr}</span>
+              <Link key={a.slug} href={`/airlines/${a.slug}`}>
+                <strong>{a.name}</strong>
+                <span>{a.code} · {a.hubs.slice(0, 2).join(", ")} · {a.adr === "CAA" ? "CAA" : a.adr}</span>
               </Link>
             ))}
-          </div>
+          </nav>
         </section>
       ))}
     </div>

@@ -27,22 +27,35 @@ export default function WatchPage() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.1fr", gap: 40, alignItems: "start" }} className="hero">
         <div>
           <p className="eyebrow">Flight Watch · free</p>
-          <h1>Add your flights. If one is late enough to pay out, we tell you.</h1>
+          <h1 className="cond" style={{ maxWidth: "15ch" }}>Add your flights. If one is late enough to pay out, we tell you.</h1>
           <p className="muted" style={{ fontSize: 19, marginTop: 14, maxWidth: "36ch" }}>The morning after each flight lands we check the record. Three hours late or cancelled, and the verdict, the amount and the letter are in your inbox before you have unpacked.</p>
-          <ul className="small" style={{ listStyle: "none", padding: 0, margin: "18px 0 0", display: "grid", gap: 8, color: "var(--ink-2)" }}>
-            <li>✓ Nothing to remember, nothing to check, nothing to pay upfront</li>
-            <li>✓ Verified from the flight record, with the day&apos;s delay and weather evidence</li>
-            <li>✓ Letter £4.99 only if there is a claim; claims firms would take £77 to £260 of it</li>
-          </ul>
+          <dl className="wfacts">
+            <div><dt>Upfront</dt><dd>£0, no card</dd></div>
+            <div><dt>Checked</dt><dd>Morning after landing</dd></div>
+            <div><dt>Pays out at</dt><dd>3h 00m late or cancelled</dd></div>
+            <div><dt>Letter, if owed</dt><dd>£4.99 (firms take £77 to £260)</dd></div>
+          </dl>
           <p className="small muted" style={{ marginTop: 18 }}>About 1 in 60 European flights arrives 3 hours late or is cancelled. A family that flies four times a year hits it roughly once every four years, and the payout is £880 to £2,080.</p>
         </div>
         <WatchForm />
       </div>
 
-      <section style={{ marginTop: 56 }} className="grid-3">
-        <div className="card"><p className="eyebrow" style={{ color: "var(--accent-ink)" }}>Before you fly</p><h3>Add the flights</h3><p className="small muted">Paste the confirmation email or type the numbers. Two seconds per flight.</p></div>
-        <div className="card"><p className="eyebrow" style={{ color: "var(--accent-ink)" }}>The morning after</p><h3>We check the record</h3><p className="small muted">Actual arrival against schedule, cancellation status, the airport&apos;s delay causes and weather for the day.</p></div>
-        <div className="card"><p className="eyebrow" style={{ color: "var(--accent-ink)" }}>If it qualifies</p><h3>The letter is waiting</h3><p className="small muted">One email: the amount, the evidence, the airline&apos;s likely defence, and the ready-to-send claim for £4.99. Or the free route, side by side.</p></div>
+      <section style={{ marginTop: 56 }} className="ledger">
+        <div className="ledger-row">
+          <span className="ledger-key">T minus anything</span>
+          <span><strong>Add the flights</strong><br /><span className="small muted">Paste the confirmation email or type the numbers. Two seconds per flight. We do not connect to your inbox.</span></span>
+          <span className="ledger-val muted">You</span>
+        </div>
+        <div className="ledger-row">
+          <span className="ledger-key">T plus one morning</span>
+          <span><strong>We read the record</strong><br /><span className="small muted">Actual arrival against schedule, cancellation status, the airport&apos;s delay causes and weather for the day.</span></span>
+          <span className="ledger-val muted">Us</span>
+        </div>
+        <div className="ledger-row">
+          <span className="ledger-key">If it qualifies</span>
+          <span><strong>The letter is waiting</strong><br /><span className="small muted">One email: the amount, the evidence, the airline&apos;s likely defence, and the ready-to-send claim for £4.99. Or the free route, side by side.</span></span>
+          <span className="ledger-val muted">Your call</span>
+        </div>
       </section>
 
       <section style={{ marginTop: 48, maxWidth: 820 }}>
@@ -50,7 +63,13 @@ export default function WatchPage() {
         {FAQS.map((f) => <details key={f.q}><summary>{f.q}</summary><p>{f.a}</p></details>)}
         <p className="small muted" style={{ marginTop: 16 }}>Already flown? <Link href="/">Check a past flight now</Link>, no sign-up needed.</p>
       </section>
-      <style>{`@media (max-width: 860px){ .hero { grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`
+        .wfacts { margin: 18px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; border-top: 1.5px solid var(--ink); padding-top: 14px; max-width: 460px; }
+        .wfacts div { display: grid; gap: 2px; }
+        .wfacts dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+        .wfacts dd { margin: 0; font-family: var(--font-mono); font-size: 14.5px; }
+        @media (max-width: 860px){ .hero { grid-template-columns: 1fr !important; } }
+      `}</style>
     </div>
   );
 }

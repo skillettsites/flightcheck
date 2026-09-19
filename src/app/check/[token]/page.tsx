@@ -27,7 +27,7 @@ export default async function CheckPage({ params, searchParams }: { params: Prom
 
   return (
     <div className="wrap" style={{ paddingTop: 28, paddingBottom: 40 }}>
-      {sp.cancelled && <p className="small" style={{ background: "var(--warn-soft)", color: "var(--warn)", padding: "10px 14px", borderRadius: 6 }}>Checkout was cancelled. Nothing has been charged; your check is still here.</p>}
+      {sp.cancelled && <p className="small" style={{ borderLeft: "3px solid var(--warn)", color: "var(--warn)", padding: "6px 12px" }}>Checkout was cancelled. Nothing has been charged; your check is still here.</p>}
       <VerdictBoard r={r} />
 
       {canBuy && (
@@ -58,25 +58,32 @@ export default async function CheckPage({ params, searchParams }: { params: Prom
 
       <EvidencePanel r={r} />
 
-      <section className="card" style={{ marginTop: 28, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-        <div><p className="eyebrow">Flight Watch · free</p><h3 style={{ marginTop: 4 }}>Never check by hand again</h3><p className="small muted" style={{ margin: 0 }}>Add your upcoming flights and we check each one the morning after it lands. Verdict by email; letter only if you want it.</p></div>
-        <Link href="/watch" className="btn btn-primary">Watch my flights</Link>
+      <section className="notice" style={{ marginTop: 32, maxWidth: "none", gridTemplateColumns: "auto 1fr auto", alignItems: "center" }}>
+        <span className="eyebrow">Flight Watch</span>
+        <div><p style={{ margin: 0, fontWeight: 600 }}>Never check by hand again.</p><p className="small muted" style={{ margin: "4px 0 0" }}>Add your upcoming flights and we read each record the morning after it lands. Verdict by email, free; letter only if you want it.</p></div>
+        <Link href="/watch" className="btn btn-ghost">Watch my flights</Link>
       </section>
 
-      <section style={{ marginTop: 28 }} className="grid-2">
-        <div className="card">
-          <p className="eyebrow">If the airline says no</p>
-          <h3 style={{ marginTop: 6 }}>{r.adr.scheme === "CAA PACT" ? "CAA complaints team" : r.adr.scheme}</h3>
+      <section style={{ marginTop: 32 }} className="strip2">
+        <div>
+          <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>If the airline says no</p>
+          <h3 style={{ marginTop: 8 }}>{r.adr.scheme === "CAA PACT" ? "CAA complaints team" : r.adr.scheme}</h3>
           <p className="small muted">{r.adr.note}</p>
           <a className="btn btn-ghost" href={r.adr.url} target="_blank" rel="noopener">Open the scheme&apos;s site</a>
         </div>
-        <div className="card">
-          <p className="eyebrow">Time limit</p>
-          <h3 style={{ marginTop: 6 }}>Claim by {r.limitation.deadline ?? "the limitation date"}</h3>
+        <div>
+          <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>Time limit</p>
+          <h3 style={{ marginTop: 8 }}>Claim by <span className="mono" style={{ fontWeight: 500 }}>{r.limitation.deadline ?? "the limitation date"}</span></h3>
           <p className="small muted">{r.limitation.years} years from the flight in {r.limitation.where}. There is no deadline for the first letter beyond that, but airlines answer faster while the operational records are fresh.</p>
           {r.airlineClaimUrl && <a className="btn btn-ghost" href={r.airlineClaimUrl} target="_blank" rel="noopener">{r.flight.airline.name}&apos;s own claim page</a>}
         </div>
       </section>
+      <style>{`
+        .strip2 { display: grid; grid-template-columns: 1fr 1fr; border-top: 1.5px solid var(--ink); }
+        .strip2 > div { padding: 18px 26px 6px 0; border-right: 1px solid var(--line); }
+        .strip2 > div + div { padding-left: 26px; border-right: 0; }
+        @media (max-width: 760px) { .strip2 { grid-template-columns: 1fr; } .strip2 > div { border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 0; } .strip2 > div + div { padding-left: 0; border-bottom: 0; } .notice[style] { grid-template-columns: 1fr !important; } }
+      `}</style>
 
       <p className="small muted" style={{ marginTop: 26, maxWidth: "76ch" }}>
         This check is information, not legal advice, and the verdict is our reading of the public record. You can make this claim yourself for free using the airline&apos;s form and the free templates from the CAA, Which? or MoneySavingExpert. Nothing here requires you to buy anything. Check reference <span className="mono">{token}</span>.

@@ -43,11 +43,13 @@ export async function weatherWindow(stationIcao: string, from: Date, to: Date): 
   const next = new Date(Date.UTC(to.getUTCFullYear(), to.getUTCMonth(), to.getUTCDate() + 1));
   p.set("year2", String(next.getUTCFullYear())); p.set("month2", String(next.getUTCMonth() + 1)); p.set("day2", String(next.getUTCDate()));
   // IEM throttles bursts (429/503). One request at a time, short backoff, then give up quietly.
+  // Observations for a day that ended more than 48 hours ago never change, so let Next keep them for 30 days.
+  const settled = Date.now() - next.getTime() > 2 * 86_400_000;
   let text: string | null = null;
   for (let attempt = 0; attempt < 3 && text === null; attempt++) {
     if (attempt > 0) await new Promise((r) => setTimeout(r, 1200 * attempt));
     try {
-      const res = await fetch(`https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?${p.toString()}`, { signal: AbortSignal.timeout(20000), cache: "no-store" });
+      const res = await fetch(`https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?${p.toString()}`, { signal: AbortSignal.timeout(20000), ...(settled ? { next: { revalidate: 2592000 } } : { cache: "no-store" as const }) });
       if (res.status === 429 || res.status === 503) continue;
       if (!res.ok) { console.error("metar fetch not ok", stationIcao, res.status); return null; }
       text = await res.text();

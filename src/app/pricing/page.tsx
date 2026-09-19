@@ -11,26 +11,39 @@ export default function Pricing() {
   return (
     <div className="wrap" style={{ paddingTop: 40, maxWidth: 900 }}>
       <p className="eyebrow">Pricing</p>
-      <h1 style={{ fontSize: "clamp(30px,4.5vw,44px)", marginTop: 8 }}>One price, once, whatever you win</h1>
+      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>One price, once, whatever you win</h1>
       <p className="muted measure" style={{ fontSize: 18 }}>Claims firms charge 35% to 50% of your compensation. On a family of four owed £350 each, that is £490 to £700 gone. We charge for the document and nothing else.</p>
 
-      <div className="grid-3" style={{ marginTop: 24 }}>
-        <div className="card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}><h3>The check</h3><span className="mono" style={{ fontSize: 22 }}>Free</span></div>
-          <ul className="small muted" style={{ paddingLeft: 18, display: "grid", gap: 4, marginTop: 8 }}>
-            <li>Flight record: scheduled vs actual</li>
-            <li>Regulation, band and amount per passenger</li>
-            <li>Eurocontrol delay causes and weather that day</li>
-            <li>Defence-risk grade and the right ADR scheme</li>
-            <li>No account, no card, no airline contacted</li>
-          </ul>
+      <div className="ledger" style={{ marginTop: 28 }}>
+        <div className="ledger-row">
+          <span className="ledger-key">The check</span>
+          <span>
+            <strong>Verdict, amount and the evidence behind it</strong>
+            <ul className="small muted" style={{ paddingLeft: 18, display: "grid", gap: 3, margin: "6px 0 0" }}>
+              <li>Flight record: scheduled vs actual</li>
+              <li>Regulation, band and amount per passenger</li>
+              <li>Eurocontrol delay causes and weather that day</li>
+              <li>Defence-risk grade and the right ADR scheme</li>
+              <li>No account, no card, no airline contacted</li>
+            </ul>
+          </span>
+          <span className="ledger-val" style={{ fontSize: 20 }}>£0.00</span>
         </div>
         {Object.values(PRODUCTS).map((p) => (
-          <div className="card" key={p.id} style={p.id === "pack" ? { borderColor: "var(--accent)" } : undefined}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}><h3>{p.name}</h3><span className="mono" style={{ fontSize: 22 }}>{p.priceLabel}</span></div>
-            <ul className="small muted" style={{ paddingLeft: 18, display: "grid", gap: 4, marginTop: 8 }}>{p.includes.map((x) => <li key={x}>{x}</li>)}</ul>
+          <div className="ledger-row" key={p.id}>
+            <span className="ledger-key">{p.name}</span>
+            <span>
+              <strong>{p.description}</strong>
+              <ul className="small muted" style={{ paddingLeft: 18, display: "grid", gap: 3, margin: "6px 0 0" }}>{p.includes.map((x) => <li key={x}>{x}</li>)}</ul>
+            </span>
+            <span className="ledger-val" style={{ fontSize: 20 }}>{p.priceLabel}</span>
           </div>
         ))}
+        <div className="ledger-row">
+          <span className="ledger-key">Flight Watch</span>
+          <span><strong>Every upcoming flight checked the morning after it lands</strong><br /><span className="small muted">Verdict by email; buy a letter only if there is a claim.</span></span>
+          <span className="ledger-val" style={{ fontSize: 20 }}>£0.00</span>
+        </div>
       </div>
 
       <table className="tbl" style={{ marginTop: 32, maxWidth: 720 }}>

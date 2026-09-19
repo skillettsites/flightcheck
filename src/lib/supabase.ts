@@ -12,9 +12,20 @@ export function supabaseConfigured(): boolean {
   return Boolean(URL && KEY);
 }
 
-export async function sbSelect<T>(table: string, query: string): Promise<T[]> {
+export async function sbSelect<T>(table: string, query: string, revalidate?: number): Promise<T[]> {
   if (!supabaseConfigured()) return [];
-  const res = await fetch(`${URL}/rest/v1/${table}?${query}`, { headers: headers(), cache: "no-store" });
+  const res = await fetch(`${URL}/rest/v1/${table}?${query}`, { headers: headers(), ...(revalidate ? { next: { revalidate } } : { cache: "no-store" as const }) });
+  if (!res.ok) {
+    console.error("supabase select failed", table, res.status, await res.text().catch(() => ""));
+    return [];
+  }
+  return (await res.json()) as T[];
+}
+
+/** Same as sbSelect but lets Next cache the response for ISR pages (seconds). */
+export async function sbSelectCached<T>(table: string, query: string, revalidate: number): Promise<T[]> {
+  if (!supabaseConfigured()) return [];
+  const res = await fetch(`${URL}/rest/v1/${table}?${query}`, { headers: headers(), next: { revalidate } });
   if (!res.ok) {
     console.error("supabase select failed", table, res.status, await res.text().catch(() => ""));
     return [];
@@ -48,9 +59,9 @@ export async function sbInsert(table: string, row: Record<string, unknown>): Pro
   return res.ok;
 }
 
-export async function sbRpc<T>(fn: string, args: Record<string, unknown>): Promise<T[]> {
+export async function sbRpc<T>(fn: string, args: Record<string, unknown>, revalidate?: number): Promise<T[]> {
   if (!supabaseConfigured()) return [];
-  const res = await fetch(`${URL}/rest/v1/rpc/${fn}`, { method: "POST", headers: headers(), body: JSON.stringify(args), cache: "no-store" });
+  const res = await fetch(`${URL}/rest/v1/rpc/${fn}`, { method: "POST", headers: headers(), body: JSON.stringify(args), ...(revalidate ? { next: { revalidate } } : { cache: "no-store" as const }) });
   if (!res.ok) {
     console.error("supabase rpc failed", fn, res.status, await res.text().catch(() => ""));
     return [];

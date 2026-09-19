@@ -10,7 +10,7 @@ export default function Rights() {
   return (
     <div className="wrap prose" style={{ paddingTop: 40, maxWidth: 780 }}>
       <p className="eyebrow">Your rights</p>
-      <h1 style={{ fontSize: "clamp(30px,4.5vw,44px)", marginTop: 8 }}>Flight compensation, without the fog</h1>
+      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>Flight compensation, without the fog</h1>
       <p style={{ fontSize: 18 }}>Two near-identical regulations do the work: EU Regulation 261/2004 (EU261) and the copy the UK kept after Brexit (UK261). Same rules, different currencies, different courts.</p>
 
       <h2>How much</h2>

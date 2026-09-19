@@ -21,7 +21,7 @@ export default function CalculatorPage() {
     <div className="wrap" style={{ paddingTop: 40, paddingBottom: 40 }}>
       <JsonLd data={faqSchema(FAQS)} />
       <p className="eyebrow">Calculator</p>
-      <h1 style={{ fontSize: "clamp(30px,4.5vw,44px)", marginTop: 8 }}>Flight delay compensation calculator</h1>
+      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>Flight delay compensation calculator</h1>
       <p className="muted measure" style={{ fontSize: 18 }}>Pick your route and the airline&apos;s home country. The calculator applies the UK261 and EU261 distance bands and tells you which regulation covers the flight and what the total is for your party.</p>
       <div style={{ marginTop: 22 }}><Calculator /></div>
 

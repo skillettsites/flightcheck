@@ -1,33 +1,50 @@
 import Link from "next/link";
 
 export default function SiteFooter() {
+  const year = new Date().getFullYear();
   return (
-    <footer style={{ borderTop: "1px solid var(--line)", marginTop: 72, padding: "36px 0 44px", background: "var(--paper-2)" }}>
-      <div className="wrap" style={{ display: "grid", gap: 26, gridTemplateColumns: "2fr 1fr 1fr" }}>
-        <div className="small muted" style={{ maxWidth: 520 }}>
-          <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--ink)", marginBottom: 8 }}>FlightDelayCheck</p>
-          <p>We sell a document, not representation. We are not a law firm, not a claims management company and not regulated by the FCA or SRA. Compensation under UK261 and EU261 can be claimed from the airline directly and free of charge; our letter is a convenience, not a requirement. We never contact the airline for you and we take no share of what you recover.</p>
-          <p>Flight data by <a href="https://aerodatabox.com" rel="noopener">AeroDataBox</a>. Airport delay data: Eurocontrol Performance Review Unit. Weather: Iowa Environmental Mesonet METAR archive. None of these bodies endorses this site.</p>
+    <footer style={{ borderTop: "1.5px solid var(--ink)", marginTop: 80, padding: "30px 0 40px", background: "var(--paper)" }}>
+      <div className="wrap foot">
+        <div className="small" style={{ maxWidth: 560 }}>
+          <p className="cond" style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", marginBottom: 10 }}>Flight<span style={{ color: "var(--accent-ink)" }}>Delay</span>Check</p>
+          <p className="muted">We sell a document, not representation. Not a law firm, not a claims management company, not regulated by the FCA or SRA. Compensation under UK261 and EU261 can be claimed from the airline directly and free of charge; the letter is a convenience, not a requirement. We never contact the airline for you and take no share of what you recover.</p>
         </div>
-        <div className="small">
-          <p className="eyebrow" style={{ marginBottom: 8 }}>Site</p>
-          <p><Link href="/how-it-works">How it works</Link></p>
-          <p><Link href="/your-rights">Your rights explained</Link></p>
-          <p><Link href="/uk261-compensation">UK261</Link> · <Link href="/eu261-compensation">EU261</Link></p>
+        <div>
+          <p className="eyebrow" style={{ marginBottom: 10 }}>Check</p>
+          <p><Link href="/">Free flight check</Link></p>
+          <p><Link href="/watch">Flight Watch</Link></p>
           <p><Link href="/flight-delay-compensation-calculator">Compensation calculator</Link></p>
-          <p><Link href="/airlines">Airlines</Link> · <Link href="/airport-delays">Airport delays</Link></p>
-          <p><Link href="/watch">Flight Watch (free)</Link></p>
+          <p><Link href="/how-it-works">How the check works</Link></p>
           <p><Link href="/pricing">Pricing</Link></p>
+        </div>
+        <div>
+          <p className="eyebrow" style={{ marginBottom: 10 }}>Read</p>
+          <p><Link href="/your-rights">Your rights, article by article</Link></p>
+          <p><Link href="/uk261-compensation">UK261</Link> · <Link href="/eu261-compensation">EU261</Link></p>
+          <p><Link href="/airlines">By airline</Link></p>
+          <p><Link href="/airport-delays">Airport delay records</Link></p>
           <p><Link href="/contact">Contact</Link></p>
         </div>
-        <div className="small">
-          <p className="eyebrow" style={{ marginBottom: 8 }}>Legal</p>
-          <p><Link href="/terms">Terms</Link></p>
-          <p><Link href="/privacy">Privacy</Link></p>
-          <p><Link href="/refunds">Refunds and cancellation</Link></p>
-          <p className="muted" style={{ marginTop: 10 }}>© {new Date().getFullYear()} FlightDelayCheck</p>
+        <div>
+          <p className="eyebrow" style={{ marginBottom: 10 }}>Record</p>
+          <p className="muted">Flight times: <a href="https://aerodatabox.com" rel="noopener">AeroDataBox</a></p>
+          <p className="muted">Delay causes: Eurocontrol PRU, daily ATFM arrival delay</p>
+          <p className="muted">Weather: METAR archive, Iowa Environmental Mesonet</p>
+          <p className="muted">Airports: OurAirports. None of these bodies endorses this site.</p>
         </div>
       </div>
+      <div className="wrap" style={{ marginTop: 26, paddingTop: 14, borderTop: "1px solid var(--line)", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+        <p className="eyebrow" style={{ margin: 0 }}>© {year} FlightDelayCheck · England</p>
+        <p className="eyebrow" style={{ margin: 0 }}><Link href="/terms" style={{ textDecoration: "none" }}>Terms</Link> · <Link href="/privacy" style={{ textDecoration: "none" }}>Privacy</Link> · <Link href="/refunds" style={{ textDecoration: "none" }}>Refunds</Link></p>
+      </div>
+      <style>{`
+        .foot { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.1fr; gap: 28px; font-size: 14px; }
+        .foot p { margin: 0 0 7px; }
+        .foot a { text-decoration: none; }
+        .foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
+        @media (max-width: 860px) { .foot { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 520px) { .foot { grid-template-columns: 1fr; } }
+      `}</style>
     </footer>
   );
 }

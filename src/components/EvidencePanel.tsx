@@ -3,7 +3,7 @@ import type { CheckResult } from "@/lib/check";
 function AirportDelay({ side, title }: { side: NonNullable<CheckResult["evidence"]["arrivalAirport"]>; title: string }) {
   return (
     <div className="card">
-      <p className="eyebrow">{title} · {side.icao}</p>
+      <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>{title} · {side.icao}</p>
       {!side.covered ? (
         <p className="small muted" style={{ margin: "8px 0 0" }}>This airport is outside the Eurocontrol network, so there is no daily air-traffic delay record to check.</p>
       ) : !side.row ? (
@@ -36,7 +36,7 @@ function Weather({ wx, title }: { wx: NonNullable<CheckResult["evidence"]["weath
   const tone = wx.severity === "adverse" ? "stop" : wx.severity === "marginal" ? "warn" : wx.severity === "clear" ? "go" : "warn";
   return (
     <div className="card">
-      <p className="eyebrow">{title} · {wx.station}</p>
+      <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>{title} · {wx.station}</p>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 6 }}>
         <h3>{wx.observations === 0 ? "No observations" : wx.severity === "clear" ? "Nothing adverse observed" : wx.severity === "marginal" ? "Marginal conditions" : "Adverse weather observed"}</h3>
         <span className={`pill ${tone}`}>{wx.severity}</span>
@@ -52,7 +52,7 @@ function Weather({ wx, title }: { wx: NonNullable<CheckResult["evidence"]["weath
       ) : (
         <p className="small muted">This station did not report METARs in the window, so weather cannot be confirmed either way.</p>
       )}
-      {wx.sampleMetar && wx.severity !== "clear" && <p className="mono small muted" style={{ marginTop: 8, wordBreak: "break-all" }}>{wx.sampleMetar}</p>}
+      {wx.sampleMetar && <p className="mono small" style={{ marginTop: 10, wordBreak: "break-all", color: "var(--ink-2)", borderTop: "1px solid var(--line)", paddingTop: 8 }}>{wx.sampleMetar}</p>}
     </div>
   );
 }
