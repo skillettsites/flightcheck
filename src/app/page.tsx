@@ -1,69 +1,90 @@
-import Image from "next/image";
+import Link from "next/link";
+import CheckForm from "@/components/CheckForm";
+import { PRODUCTS } from "@/lib/products";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <section className="wrap" style={{ paddingTop: 48, paddingBottom: 30 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 40, alignItems: "start" }} className="hero">
+          <div>
+            <p className="eyebrow" style={{ marginBottom: 14 }}>UK261 · EU261 · delays, cancellations, denied boarding</p>
+            <h1>Was your flight late enough to be owed £220 to £520?</h1>
+            <p className="muted" style={{ fontSize: 19, marginTop: 16, maxWidth: "36ch" }}>
+              We check the flight&apos;s actual arrival time, the air-traffic delay record and the airport weather for that day, then tell you whether you have a claim and how strong it is. Free.
+            </p>
+            <ul className="small" style={{ listStyle: "none", padding: 0, margin: "18px 0 0", display: "grid", gap: 8, color: "var(--ink-2)" }}>
+              <li>✓ Verified against the flight record, not your memory of it</li>
+              <li>✓ Shows what the airline could argue before you write</li>
+              <li>✓ Claim letter £4.99. Claims firms take 35% to 50% of your payout</li>
+            </ul>
+          </div>
+          <CheckForm />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="wrap" style={{ paddingTop: 30 }}>
+        <div className="honest measure">
+          <p style={{ margin: 0, fontWeight: 600 }}>You can claim for free without us.</p>
+          <p className="small" style={{ margin: "6px 0 0" }}>Every airline has a claim form and the CAA, Which? and MoneySavingExpert publish free templates. What they cannot do is pull the flight record, the Eurocontrol delay causes and the weather for your flight and put them in the letter. That is the only thing we charge for.</p>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="wrap" style={{ paddingTop: 56 }}>
+        <p className="eyebrow">How the check works</p>
+        <h2 style={{ marginTop: 8, marginBottom: 22 }}>Three public records, one verdict</h2>
+        <div className="grid-3">
+          <div className="card">
+            <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>01 · Flight record</p>
+            <h3>Scheduled versus actual</h3>
+            <p className="small muted">We look up the flight by number and date: scheduled and actual gate times, whether it was cancelled or diverted, and the great-circle distance that sets your compensation band.</p>
+          </div>
+          <div className="card">
+            <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>02 · Airport delay causes</p>
+            <h3>What Eurocontrol logged that day</h3>
+            <p className="small muted">Every European airport&apos;s air-traffic delay is recorded daily by cause: weather, ATC strike, ATC staffing, equipment failure. If there was none, the airline&apos;s &ldquo;extraordinary circumstances&rdquo; line is weak, and your letter says so.</p>
+          </div>
+          <div className="card">
+            <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>03 · Airport weather</p>
+            <h3>The METAR at the hour</h3>
+            <p className="small muted">The observed visibility, gusts, thunderstorms or snow at both airports around your flight time. Airlines say &ldquo;weather&rdquo; a lot. This shows whether there was any.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="wrap" style={{ paddingTop: 56 }}>
+        <p className="eyebrow">What it costs</p>
+        <h2 style={{ marginTop: 8, marginBottom: 6 }}>The verdict is free. The letter is £4.99.</h2>
+        <p className="muted measure" style={{ marginBottom: 22 }}>On a £350 medium-haul claim, a no-win-no-fee firm keeps £122 to £176. We keep £4.99 whatever you win, and we never touch the money.</p>
+        <div className="grid-2" style={{ maxWidth: 860 }}>
+          {Object.values(PRODUCTS).map((p) => (
+            <div className="card" key={p.id} style={p.id === "pack" ? { borderColor: "var(--accent)" } : undefined}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                <h3>{p.name}</h3>
+                <span className="mono" style={{ fontSize: 22, fontWeight: 500 }}>{p.priceLabel}</span>
+              </div>
+              <p className="small muted">{p.description}</p>
+              <ul className="small" style={{ paddingLeft: 18, margin: "8px 0 0", color: "var(--ink-2)", display: "grid", gap: 4 }}>
+                {p.includes.map((x) => <li key={x}>{x}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p className="small muted" style={{ marginTop: 14 }}>One-off payment. Delivered on screen and by email the moment you pay. <Link href="/refunds">Refund policy</Link>.</p>
+      </section>
+
+      <section className="wrap" style={{ paddingTop: 56, maxWidth: 820 }}>
+        <p className="eyebrow">Questions people ask first</p>
+        <h2 style={{ marginTop: 8, marginBottom: 12 }}>Before you check</h2>
+        <details><summary>How late does the flight have to be?</summary><p>Three hours or more at arrival, measured when the doors open at the gate, not when the wheels touch down. Under three hours there is no compensation, though you were owed food and drink after two hours on a short flight.</p></details>
+        <details><summary>How much is it?</summary><p>Fixed by distance: £220 (up to 1,500 km), £350 (1,500 to 3,500 km), £520 (over 3,500 km) under UK law; €250, €400 and €600 under EU law. Per passenger, regardless of the fare paid. Long-haul flights delayed between three and four hours pay half.</p></details>
+        <details><summary>Which flights are covered?</summary><p>Any flight departing the UK or the EU on any airline, plus flights into the UK on a UK or EU airline and flights into the EU on an EU airline. A Ryanair flight from Malaga to Manchester is covered twice over; a Delta flight from New York to Heathrow is not covered at all.</p></details>
+        <details><summary>What are &ldquo;extraordinary circumstances&rdquo;?</summary><p>Events outside the airline&apos;s control that could not have been avoided with all reasonable measures: severe weather, air-traffic control restrictions or strikes, security risks, a bird strike. Not extraordinary, whatever the airline says: technical faults, crew shortages, the airline&apos;s own staff striking, or a late inbound aircraft. The airline has to prove it, and that is exactly what the public record in your check is for.</p></details>
+        <details><summary>How far back can I claim?</summary><p>Six years in England and Wales, five in Scotland. We can verify flights from the last 12 months automatically; for older flights, <Link href="/contact">send us the details</Link> and we will look it up by hand.</p></details>
+        <details><summary>Do I have to use a claims company?</summary><p>No. The Civil Aviation Authority says so, and so do we. Claim directly, and if the airline refuses or ignores you for eight weeks, its approved dispute scheme (CEDR or AviationADR) is free to you and binding on the airline. Your check tells you which one.</p></details>
+      </section>
+
+      <style>{`@media (max-width: 860px){ .hero { grid-template-columns: 1fr !important; } }`}</style>
+    </>
   );
 }
