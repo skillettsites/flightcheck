@@ -62,8 +62,8 @@ export function watchResultEmail(args: { token: string; checkToken: string; flig
   if (args.verdict === "unclear") {
     return {
       subject: `${args.flightNumber} on ${args.date}: cancelled, one detail decides your claim`,
-      html: shell("Your flight shows as cancelled", `<p>The record shows <strong>${esc(args.flightNumber)}</strong> on ${esc(args.date)} was cancelled. Whether compensation is due depends on how much notice you were given and whether you were re-routed close to the original times.</p>${btn(`${SITE}/?flight=${encodeURIComponent(args.flightNumber)}&date=${args.date}&disruption=cancellation`, "Answer two questions for the verdict")}<p style="font-size:13px;color:#445266">You are always owed a refund or re-routing and care for a cancellation, whatever the compensation position.</p>`, `You are receiving this because you asked us to watch this flight. <a href="${manage}">Manage or stop your flight watch</a>.`),
-      text: `${args.flightNumber} on ${args.date} was cancelled. Verdict: ${SITE}/?flight=${args.flightNumber}&date=${args.date}&disruption=cancellation`,
+      html: shell("Your flight shows as cancelled", `<p>The record shows <strong>${esc(args.flightNumber)}</strong> on ${esc(args.date)} was cancelled. Whether compensation is due depends on how much notice you were given and whether you were re-routed close to the original times.</p>${btn(check, "Answer one question for the verdict")}<p style="font-size:13px;color:#445266">You are always owed a refund or re-routing and care for a cancellation, whatever the compensation position.</p>`, `You are receiving this because you asked us to watch this flight. <a href="${manage}">Manage or stop your flight watch</a>.`),
+      text: `${args.flightNumber} on ${args.date} was cancelled. Verdict: ${check}`,
     };
   }
   return {

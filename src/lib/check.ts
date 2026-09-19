@@ -155,18 +155,7 @@ export async function runCheck(input: CheckInput): Promise<CheckResult | { error
     return d.toISOString().slice(0, 10);
   })();
 
-  let verdict: CheckResult["verdict"];
-  if (eligibility.status === "eligible") verdict = defenceRisk.level === "high" ? "borderline" : "claim";
-  else if (eligibility.status === "not_eligible") verdict = "no_claim";
-  else verdict = "unclear";
-
-  const primaryBand = bands[0];
-  const money = primaryBand ? `${primaryBand.currency === "GBP" ? "£" : "€"}${primaryBand.amount}` : "";
-  const headline =
-    verdict === "claim" ? `You have a claim worth ${money} per passenger.` :
-    verdict === "borderline" ? `You may have a claim worth ${money} per passenger, but expect the airline to argue extraordinary circumstances.` :
-    verdict === "no_claim" ? `This flight does not qualify for compensation.` :
-    `We need one more detail to give you a verdict.`;
+  const { verdict, headline } = decide(eligibility, defenceRisk, bands);
 
   return {
     input,
@@ -195,6 +184,43 @@ export async function runCheck(input: CheckInput): Promise<CheckResult | { error
     headline,
     generatedAt: new Date().toISOString(),
   };
+}
+
+export function decide(eligibility: Eligibility, defenceRisk: CheckResult["defenceRisk"], bands: CompensationBand[]): { verdict: CheckResult["verdict"]; headline: string } {
+  let verdict: CheckResult["verdict"];
+  if (eligibility.status === "eligible") verdict = defenceRisk.level === "high" ? "borderline" : "claim";
+  else if (eligibility.status === "not_eligible") verdict = "no_claim";
+  else verdict = "unclear";
+  const primaryBand = bands[0];
+  const money = primaryBand ? `${primaryBand.currency === "GBP" ? "£" : "€"}${primaryBand.amount}` : "";
+  const headline =
+    verdict === "claim" ? `You have a claim worth ${money} per passenger.` :
+    verdict === "borderline" ? `You may have a claim worth ${money} per passenger, but expect the airline to argue extraordinary circumstances.` :
+    verdict === "no_claim" ? `This flight does not qualify for compensation.` :
+    `We need one more detail to give you a verdict.`;
+  return { verdict, headline };
+}
+
+/**
+ * Re-evaluate a stored check with the one fact the flight record cannot hold: how much notice a
+ * cancellation came with (and whether a re-route was offered), or that the passenger was bumped
+ * from a flight that ran. No flight, Eurocontrol or METAR fetches; the evidence is reused as is.
+ */
+export function refineCheck(prev: CheckResult, patch: { noticeDays?: number | null; reroutedWithinLimits?: boolean | null; deniedBoarding?: boolean }): CheckResult {
+  const input: CheckInput = {
+    ...prev.input,
+    disruption: patch.deniedBoarding ? "denied_boarding" : prev.flight.cancelled ? "cancellation" : prev.input.disruption,
+    noticeDays: patch.noticeDays !== undefined ? patch.noticeDays : prev.input.noticeDays,
+    reroutedWithinLimits: patch.reroutedWithinLimits !== undefined ? patch.reroutedWithinLimits : prev.input.reroutedWithinLimits,
+  };
+  let eligibility: Eligibility;
+  if (prev.regimes.length === 0) eligibility = prev.eligibility;
+  else if (input.disruption === "denied_boarding") eligibility = { status: "eligible", reason: "Denied boarding against your will (overbooking) carries fixed compensation under Art 4 with no extraordinary-circumstances defence, provided you checked in on time and were not denied for a reason such as documents or safety." };
+  else if (input.disruption === "cancellation") eligibility = cancellationEligibility({ noticeDays: input.noticeDays ?? null, rerouteOfferedWithinLimits: input.reroutedWithinLimits ?? null });
+  else eligibility = delayEligibility(prev.flight.arrivalDelayMin);
+  const defenceRisk = assessDefenceRisk(prev.evidence, input.disruption);
+  const { verdict, headline } = decide(eligibility, defenceRisk, prev.bands);
+  return { ...prev, input, eligibility, defenceRisk, verdict, headline, generatedAt: new Date().toISOString() };
 }
 
 function assessDefenceRisk(e: Evidence, disruption: Disruption): CheckResult["defenceRisk"] {

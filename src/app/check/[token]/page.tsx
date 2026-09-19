@@ -6,7 +6,7 @@ import type { CheckResult } from "@/lib/check";
 import VerdictBoard from "@/components/VerdictBoard";
 import EvidencePanel from "@/components/EvidencePanel";
 import BuyBox from "@/components/BuyBox";
-import CheckForm from "@/components/CheckForm";
+import { CancellationRefine, DeniedBoardingLink } from "@/components/RefineForm";
 
 export const dynamic = "force-dynamic";
 
@@ -45,14 +45,38 @@ export default async function CheckPage({ params, searchParams }: { params: Prom
             <li>If you think the record is wrong (for example you were on a different leg of this flight number), <Link href="/">run the check again</Link> with the departure airport code filled in.</li>
             <li>Travel insurance may cover consequential costs. That is a separate claim to your insurer and outside what we do.</li>
           </ul>
+          {!r.flight.cancelled && r.regimes.length > 0 && r.input.disruption !== "denied_boarding" && (
+            <p className="small muted" style={{ margin: "12px 0 0" }}>Bumped from this flight because it was overbooked? That is compensated even when the flight ran on time. <DeniedBoardingLink token={token} /></p>
+          )}
         </section>
       )}
 
-      {r.verdict === "unclear" && (
-        <section className="card" style={{ marginTop: 22 }}>
-          <h3>One detail decides it</h3>
-          <p className="small muted">{r.eligibility.reason} Run the check again with the cancellation notice filled in and the verdict will be definite.</p>
-          <div style={{ marginTop: 12 }}><CheckForm compact /></div>
+      {r.verdict === "unclear" && r.flight.cancelled && (
+        <section className="pass" style={{ marginTop: 22 }}>
+          <div className="pass-main">
+            <span className="pass-code">One thing the record cannot tell us</span>
+            <h2 className="cond" style={{ fontSize: "clamp(24px, 3.2vw, 36px)" }}>The flight was cancelled. When were you told?</h2>
+            <p className="small muted" style={{ margin: 0, maxWidth: "62ch" }}>Compensation for a cancellation turns on notice: 14 days or more and none is due; less than that and it is, unless the airline re-routed you close to the original times. Everything else is already on the board.</p>
+            <CancellationRefine token={token} />
+          </div>
+          <div className="pass-stub">
+            <div>
+              <p className="pass-code" style={{ margin: "0 0 6px" }}>If it qualifies</p>
+              <p className="pass-big" style={{ margin: 0 }}>{band ? `${band.currency === "GBP" ? "£" : "€"}${band.amount}` : "Per seat"}</p>
+              <p className="small muted" style={{ margin: "8px 0 0", lineHeight: 1.4 }}>per passenger, whatever the fare was.</p>
+            </div>
+            <p className="pass-code" style={{ margin: 0 }}>No card, no account</p>
+          </div>
+        </section>
+      )}
+
+      {r.verdict === "unclear" && !r.flight.cancelled && (
+        <section className="notice" style={{ marginTop: 22 }}>
+          <span className="eyebrow">Record gap</span>
+          <div>
+            <p style={{ margin: 0, fontWeight: 600 }}>The record has no arrival time for this flight.</p>
+            <p className="small muted" style={{ margin: "6px 0 0" }}>{r.eligibility.reason} If the flight number flew more than one leg that day, <Link href="/">run it again</Link> with the departure airport code. Otherwise <Link href="/contact">send us the details</Link> and we will check it by hand.</p>
+          </div>
         </section>
       )}
 

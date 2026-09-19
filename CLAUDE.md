@@ -42,6 +42,9 @@ Always `git -c user.name="skillettsites" -c user.email="davidskillett@hotmail.co
 ## Design (redesigned 19 Sep, late)
 Vocabulary comes from the subject: a boarding pass (`.pass` / `.pass-main` / `.pass-stub` with the perforated edge and notches) for the check form and the buy form, a departure board (`.board`, amber flap values, `.flap-in` reveal) for verdicts, a ticker (`.tape`) of real recent disruption days on the home page, hairline ledgers (`.ledger`) instead of pricing cards, a typographic index (`.index`) instead of airline chips, a numbered FAQ record (`details` styling; add `className="plain"` to any `<details>` that is not an FAQ). Archivo is loaded as a variable font with the `wdth` axis: h1 is condensed (wdth 76), h2 86, `.cond` / `.wide` helpers. Only the board and the pass are boxes; everything else is rules on paper. No emoji, no tick lists, no three-card rows.
 
+## The form asks two things only
+Flight number and date. The record decides delayed vs cancelled vs diverted (`runCheck` promotes to "cancellation" when the status says so). The two facts the record cannot hold are asked afterwards, on the result: `CancellationRefine` (notice given, re-route offered) for a cancelled flight, and `DeniedBoardingLink` on no-claim results for a flight that ran. Both post to `/api/check/refine`, which re-evaluates the STORED result with `refineCheck()` (no AeroDataBox/METAR spend) and files a new `fcc_checks` row with a new token.
+
 ## Caching
 Public reads in `lib/disruption.ts` pass `revalidate = 86400` so `/airport-delays` and the day pages are really static/ISR (a `cache: "no-store"` fetch anywhere in a page makes the whole route dynamic, which is what was happening before). METAR fetches for days that ended 48h+ ago are cached for 30 days. Customer reads (`fcc_get_check` etc.) stay `no-store`.
 
