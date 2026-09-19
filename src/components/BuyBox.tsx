@@ -31,21 +31,21 @@ export default function BuyBox({ checkToken, perPassenger, currency, defaultProd
   }
 
   return (
-    <form onSubmit={go} className="pass" id="buy" style={{ borderColor: "var(--ink)" }}>
+    <form onSubmit={go} className="pass" id="buy">
       <div className="pass-main">
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <span className="pass-code">Claim documents · written from this record</span>
           <span className="pass-code">Ref {checkToken}</span>
         </div>
         <div>
-          <h2 className="cond" style={{ fontSize: "clamp(26px, 3.6vw, 40px)" }}>{claim ? `Claim ${sym}${claim}${passengers > 1 ? ` for ${passengers} passengers` : ""}` : "Get your claim documents"}</h2>
-          <p className="small muted" style={{ margin: "8px 0 0", maxWidth: "62ch" }}>A claims firm would keep {claim ? `${sym}${Math.round(claim * 0.35)} to ${sym}${Math.round(claim * 0.5)}` : "35% to 50%"} of that. The {PRODUCTS[product].name.toLowerCase()} is {PRODUCTS[product].priceLabel}, once, and you keep the lot.</p>
+          <h2 style={{ fontSize: "clamp(24px, 3.2vw, 34px)" }}>{claim ? `Claim ${sym}${claim}${passengers > 1 ? ` for ${passengers} passengers` : ""}` : "Get your claim documents"}</h2>
+          <p className="small muted" style={{ margin: "8px 0 0", maxWidth: "62ch" }}>The {PRODUCTS[product].name.toLowerCase()} is {PRODUCTS[product].priceLabel}, once. Compensation goes from the airline to you.</p>
         </div>
 
         <div className="ledger" role="radiogroup" aria-label="Choose a product">
           {(Object.values(PRODUCTS)).map((p) => (
             <label key={p.id} className="ledger-row" style={{ cursor: "pointer", gridTemplateColumns: "auto 1fr auto", padding: "12px 0", background: product === p.id ? "transparent" : undefined }}>
-              <input type="radio" name="product" value={p.id} checked={product === p.id} onChange={() => setProduct(p.id)} style={{ accentColor: "var(--ink)", marginTop: 3 }} />
+              <input type="radio" name="product" value={p.id} checked={product === p.id} onChange={() => setProduct(p.id)} style={{ accentColor: "var(--accent)", marginTop: 3 }} />
               <span>
                 <strong style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}>{p.name}</strong>
                 {p.id === "pack" && <span className="pill dark" style={{ marginLeft: 8, verticalAlign: "middle" }}>Recommended for 2+</span>}
@@ -69,7 +69,7 @@ export default function BuyBox({ checkToken, perPassenger, currency, defaultProd
         {passengers > 1 && <div className="field"><label htmlFor="paxnames">Other passengers&apos; names (optional, they go in the letter)</label><input id="paxnames" className="input" value={passengerNames} onChange={(e) => setPassengerNames(e.target.value)} /></div>}
 
         <label className="small" style={{ display: "flex", gap: 10, alignItems: "flex-start", color: "var(--ink-2)" }}>
-          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required style={{ marginTop: 3, accentColor: "var(--ink)" }} />
+          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required style={{ marginTop: 3, accentColor: "var(--accent)" }} />
           <span>I want my documents produced immediately after payment. I understand this means I lose the 14-day right to cancel under the Consumer Contracts Regulations 2013 once they are delivered, and I have read the <a href="/refunds" target="_blank" rel="noopener">refund policy</a>.</span>
         </label>
         {error && <p role="alert" className="small" style={{ color: "var(--stop)", margin: 0 }}>{error}</p>}
@@ -89,7 +89,7 @@ export default function BuyBox({ checkToken, perPassenger, currency, defaultProd
           )}
         </div>
         <div style={{ display: "grid", gap: 8 }}>
-          <button className="btn btn-primary" type="submit" disabled={busy} style={{ width: "100%" }}>{busy ? "Opening checkout…" : `Pay ${PRODUCTS[product].priceLabel}`}</button>
+          <button className="btn btn-accent" type="submit" disabled={busy} style={{ width: "100%" }}>{busy ? "Opening checkout…" : `Pay ${PRODUCTS[product].priceLabel}`}</button>
           <p className="pass-code" style={{ margin: 0, textAlign: "center" }}>Delivered on payment</p>
         </div>
       </div>

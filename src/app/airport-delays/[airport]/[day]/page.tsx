@@ -92,7 +92,7 @@ export default async function DayPage({ params }: { params: Promise<{ airport: s
               {wx.phenomena.length > 0 && <div className="board-row"><span className="board-key">Phenomena</span><span className="board-val dim">{wx.phenomena.join(", ")}</span></div>}
             </>
           )}
-          <p className="small" style={{ color: "#8a96ad", margin: "12px 0 0" }}>Delay codes are Eurocontrol&apos;s IATA-standard causes. {extraordinaryShare > 0 ? `${extraordinaryShare}% of this day's delay sits in categories airlines usually plead as extraordinary circumstances.` : "None of this day's delay sits in the categories airlines usually plead as extraordinary."}</p>
+          <p className="small muted" style={{ margin: "12px 0 0" }}>Delay codes are Eurocontrol&apos;s IATA-standard causes. {extraordinaryShare > 0 ? `${extraordinaryShare}% of this day's delay sits in categories airlines usually plead as extraordinary circumstances.` : "None of this day's delay sits in the categories airlines usually plead as extraordinary."}</p>
         </section>
         <div>
           <p className="eyebrow" style={{ marginBottom: 8 }}>Were you on a flight that day?</p>

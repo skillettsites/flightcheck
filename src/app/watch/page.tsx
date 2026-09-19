@@ -27,13 +27,13 @@ export default function WatchPage() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1.1fr", gap: 40, alignItems: "start" }} className="hero">
         <div>
           <p className="eyebrow">Flight Watch · free</p>
-          <h1 className="cond" style={{ maxWidth: "15ch" }}>Add your flights. If one is late enough to pay out, we tell you.</h1>
+          <h1 style={{ maxWidth: "16ch" }}>Add your flights. If one is late enough to pay out, we tell you.</h1>
           <p className="muted" style={{ fontSize: 19, marginTop: 14, maxWidth: "36ch" }}>The morning after each flight lands we check the record. Three hours late or cancelled, and the verdict, the amount and the letter are in your inbox before you have unpacked.</p>
           <dl className="wfacts">
             <div><dt>Upfront</dt><dd>£0, no card</dd></div>
             <div><dt>Checked</dt><dd>Morning after landing</dd></div>
             <div><dt>Pays out at</dt><dd>3h 00m late or cancelled</dd></div>
-            <div><dt>Letter, if owed</dt><dd>£4.99 (firms take £77 to £260)</dd></div>
+            <div><dt>Letter, if owed</dt><dd>£4.99, once</dd></div>
           </dl>
           <p className="small muted" style={{ marginTop: 18 }}>About 1 in 60 European flights arrives 3 hours late or is cancelled. A family that flies four times a year hits it roughly once every four years, and the payout is £880 to £2,080.</p>
         </div>
@@ -64,10 +64,10 @@ export default function WatchPage() {
         <p className="small muted" style={{ marginTop: 16 }}>Already flown? <Link href="/">Check a past flight now</Link>, no sign-up needed.</p>
       </section>
       <style>{`
-        .wfacts { margin: 18px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; border-top: 1.5px solid var(--ink); padding-top: 14px; max-width: 460px; }
+        .wfacts { margin: 18px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; border-top: 1px solid var(--line); padding-top: 14px; max-width: 460px; }
         .wfacts div { display: grid; gap: 2px; }
-        .wfacts dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
-        .wfacts dd { margin: 0; font-family: var(--font-mono); font-size: 14.5px; }
+        .wfacts dt { font-size: 13px; color: var(--ink-3); font-weight: 600; }
+        .wfacts dd { margin: 0; font-size: 14.5px; }
         @media (max-width: 860px){ .hero { grid-template-columns: 1fr !important; } }
       `}</style>
     </div>

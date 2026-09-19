@@ -21,7 +21,7 @@ export default function UK261() {
     <div className="wrap prose" style={{ paddingTop: 40, paddingBottom: 40, maxWidth: 820 }}>
       <JsonLd data={faqSchema(FAQS)} />
       <p className="eyebrow">UK261</p>
-      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>UK261 compensation, in sterling and in plain terms</h1>
+      <h1 style={{ marginTop: 8 }}>UK261 compensation, in sterling and in plain terms</h1>
       <p style={{ fontSize: 18 }}>When the UK left the EU it kept Regulation 261/2004 word for word, converted the money to pounds and handed enforcement to the CAA and the UK courts. If your flight left a UK airport, or landed at one on a UK or EU airline, this is your regulation.</p>
 
       <h2>Amounts</h2>

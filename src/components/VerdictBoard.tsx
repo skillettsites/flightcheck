@@ -26,7 +26,7 @@ export default function VerdictBoard({ r }: { r: CheckResult }) {
         <span className={`pill ${tone}`}>{label}</span>
       </div>
       <p id="verdict" className="verdict-line">{r.headline}</p>
-      <p className="small" style={{ color: "#c9d1de", margin: "0 0 12px", maxWidth: "70ch" }}>{r.eligibility.reason}</p>
+      <p className="small muted" style={{ margin: "0 0 12px", maxWidth: "70ch" }}>{r.eligibility.reason}</p>
 
       <div className="board-row"><span className="board-key">Route</span><span className="board-val dim">{dep.airport?.iata ?? dep.icao} → {arr.airport?.iata ?? arr.icao}</span></div>
       <div className="board-row"><span className="board-key">Scheduled arrival</span><span className="board-val dim">{local(arr.scheduledLocal)}</span></div>
@@ -37,11 +37,11 @@ export default function VerdictBoard({ r }: { r: CheckResult }) {
       {band && <div className="board-row"><span className="board-key">Per passenger</span><span className="board-val">{band.currency === "GBP" ? "£" : "€"}{band.amount}{band.reducedAmount && r.flight.arrivalDelayMin !== null && r.flight.arrivalDelayMin < 240 && r.flight.arrivalDelayMin >= 180 ? ` (${band.currency === "GBP" ? "£" : "€"}${band.reducedAmount} if re-routed)` : ""}</span></div>}
       <div className="board-row"><span className="board-key">Airline defence risk</span><span className={`board-val ${r.defenceRisk.level === "low" ? "" : "dim"}`}>{r.defenceRisk.level.toUpperCase()}</span></div>
       {r.regimes.length > 0 && (
-        <p className="small" style={{ color: "#8a96ad", margin: "12px 0 0" }}>
+        <p className="small muted" style={{ margin: "12px 0 0" }}>
           Why this regulation: {r.regimes.map((x) => x.basis).join("; ")}. Airline: {r.flight.airline.ukOrEuCarrier === null ? "carrier nationality not on file, verdict assumes departure-airport rules only" : r.flight.airline.ukOrEuCarrier ? `a ${countryName(r.flight.airline.country!)} carrier` : `a ${countryName(r.flight.airline.country!)} carrier, so only departure-airport rules apply`}.
         </p>
       )}
-      <p className="small" style={{ color: "#6f7d95", margin: "10px 0 0" }}>Flight record via AeroDataBox. Times shown in local airport time.{arr.actualBasis === "runway" ? " Gate time was not recorded; touchdown is shown and the doors typically open 5 to 10 minutes later." : ""}</p>
+      <p className="small muted" style={{ margin: "10px 0 0" }}>Flight record via AeroDataBox. Times shown in local airport time.{arr.actualBasis === "runway" ? " Gate time was not recorded; touchdown is shown and the doors typically open 5 to 10 minutes later." : ""}</p>
     </section>
   );
 }

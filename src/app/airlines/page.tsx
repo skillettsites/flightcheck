@@ -16,7 +16,7 @@ export default function Airlines() {
   return (
     <div className="wrap" style={{ paddingTop: 40, paddingBottom: 40 }}>
       <p className="eyebrow">Airlines</p>
-      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>Who covers what, airline by airline</h1>
+      <h1 style={{ marginTop: 8 }}>Who covers what, airline by airline</h1>
       <p className="muted measure" style={{ fontSize: 18 }}>The airline&apos;s nationality decides whether your flight home is covered. Pick yours for the routes, the bands, the claim page and the escalation scheme.</p>
       {groups.map(([title, blurb, list]) => (
         <section key={title} style={{ marginTop: 32 }}>

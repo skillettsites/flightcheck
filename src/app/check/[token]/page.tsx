@@ -55,7 +55,7 @@ export default async function CheckPage({ params, searchParams }: { params: Prom
         <section className="pass" style={{ marginTop: 22 }}>
           <div className="pass-main">
             <span className="pass-code">One thing the record cannot tell us</span>
-            <h2 className="cond" style={{ fontSize: "clamp(24px, 3.2vw, 36px)" }}>The flight was cancelled. When were you told?</h2>
+            <h2 style={{ fontSize: "clamp(22px, 3vw, 30px)" }}>The flight was cancelled. When were you told?</h2>
             <p className="small muted" style={{ margin: 0, maxWidth: "62ch" }}>Compensation for a cancellation turns on notice: 14 days or more and none is due; less than that and it is, unless the airline re-routed you close to the original times. Everything else is already on the board.</p>
             <CancellationRefine token={token} />
           </div>
@@ -90,23 +90,23 @@ export default async function CheckPage({ params, searchParams }: { params: Prom
 
       <section style={{ marginTop: 32 }} className="strip2">
         <div>
-          <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>If the airline says no</p>
+          <p className="eyebrow" style={{ color: "var(--accent)" }}>If the airline says no</p>
           <h3 style={{ marginTop: 8 }}>{r.adr.scheme === "CAA PACT" ? "CAA complaints team" : r.adr.scheme}</h3>
           <p className="small muted">{r.adr.note}</p>
           <a className="btn btn-ghost" href={r.adr.url} target="_blank" rel="noopener">Open the scheme&apos;s site</a>
         </div>
         <div>
-          <p className="eyebrow" style={{ color: "var(--accent-ink)" }}>Time limit</p>
+          <p className="eyebrow" style={{ color: "var(--accent)" }}>Time limit</p>
           <h3 style={{ marginTop: 8 }}>Claim by <span className="mono" style={{ fontWeight: 500 }}>{r.limitation.deadline ?? "the limitation date"}</span></h3>
           <p className="small muted">{r.limitation.years} years from the flight in {r.limitation.where}. There is no deadline for the first letter beyond that, but airlines answer faster while the operational records are fresh.</p>
           {r.airlineClaimUrl && <a className="btn btn-ghost" href={r.airlineClaimUrl} target="_blank" rel="noopener">{r.flight.airline.name}&apos;s own claim page</a>}
         </div>
       </section>
       <style>{`
-        .strip2 { display: grid; grid-template-columns: 1fr 1fr; border-top: 1.5px solid var(--ink); }
-        .strip2 > div { padding: 18px 26px 6px 0; border-right: 1px solid var(--line); }
-        .strip2 > div + div { padding-left: 26px; border-right: 0; }
-        @media (max-width: 760px) { .strip2 { grid-template-columns: 1fr; } .strip2 > div { border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 0; } .strip2 > div + div { padding-left: 0; border-bottom: 0; } .notice[style] { grid-template-columns: 1fr !important; } }
+        .strip2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .strip2 > div { padding: 20px; background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+        .strip2 > div + div { }
+        @media (max-width: 760px) { .strip2 { grid-template-columns: 1fr; } .notice[style] { grid-template-columns: 1fr !important; } }
       `}</style>
 
       <p className="small muted" style={{ marginTop: 26, maxWidth: "76ch" }}>

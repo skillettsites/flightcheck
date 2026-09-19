@@ -29,7 +29,7 @@ export default async function AirportDelaysIndex() {
     <div className="wrap" style={{ paddingTop: 40, paddingBottom: 40 }}>
       <JsonLd data={breadcrumbSchema([{ name: "Home", url: SITE }, { name: "Airport delays", url: `${SITE}/airport-delays` }])} />
       <p className="eyebrow">Airport delay records</p>
-      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>The days the airports broke, airport by airport</h1>
+      <h1 style={{ marginTop: 8 }}>The days the airports broke, airport by airport</h1>
       <p className="muted measure" style={{ fontSize: 18 }}>Eurocontrol logs every minute of air-traffic delay attributed to each European airport, every day, by cause. When an airline says &ldquo;weather&rdquo; or &ldquo;air traffic control&rdquo;, this is the record that says whether it happened. Find your airport and your day, then check your flight.</p>
 
       <section style={{ marginTop: 30 }}>

@@ -11,7 +11,7 @@ export default function HowItWorks() {
   return (
     <div className="wrap prose" style={{ paddingTop: 40, maxWidth: 780 }}>
       <p className="eyebrow">How it works</p>
-      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>A claim built on the record, not on a form you fill in from memory</h1>
+      <h1 style={{ marginTop: 8 }}>A claim built on the record, not on a form you fill in from memory</h1>
 
       <h2>1. You give us a flight number and a date</h2>
       <p>That is all the check needs. We do not ask for your name, booking or card to give you the verdict. Flights from the last twelve months are verified automatically.</p>

@@ -75,7 +75,7 @@ export default function Calculator() {
             const sym = b.currency === "GBP" ? "£" : "€";
             return <div className="board-row" key={b.regime}><span className="board-key">{b.regime} · {b.bandLabel}</span><span className="board-val">{sym}{half} × {pax} = {sym}{(half * pax).toLocaleString()}</span></div>;
           })}
-          <p className="small" style={{ color: "#8a96ad", margin: "12px 0 0" }}>
+          <p className="small muted" style={{ margin: "12px 0 0" }}>
             {regimes.length === 0 ? "Only flights departing the UK or EU, or arriving there on a UK/EU airline, are covered. Other countries have their own rules." : regimes.map((r) => r.basis).join("; ") + "."}
             {delay !== "under3" && regimes.length > 0 ? " Payable unless the airline proves extraordinary circumstances." : ""}
           </p>

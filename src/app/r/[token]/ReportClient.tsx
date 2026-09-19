@@ -30,7 +30,7 @@ export default function ReportClient({ token, letter, mode = "wait" }: { token: 
   if (mode === "tools") {
     return (
       <>
-        <button className="btn btn-primary" type="button" onClick={async () => { if (letter) { await navigator.clipboard.writeText(letter); setCopied(true); setTimeout(() => setCopied(false), 2000); } }}>{copied ? "Copied" : "Copy letter"}</button>
+        <button className="btn btn-accent" type="button" onClick={async () => { if (letter) { await navigator.clipboard.writeText(letter); setCopied(true); setTimeout(() => setCopied(false), 2000); } }}>{copied ? "Copied" : "Copy letter"}</button>
         <button className="btn btn-ghost" type="button" onClick={() => window.print()}>Print or save as PDF</button>
       </>
     );

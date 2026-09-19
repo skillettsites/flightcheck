@@ -11,8 +11,8 @@ export default function Pricing() {
   return (
     <div className="wrap" style={{ paddingTop: 40, maxWidth: 900 }}>
       <p className="eyebrow">Pricing</p>
-      <h1 className="cond" style={{ fontSize: "clamp(34px,5vw,56px)", marginTop: 8 }}>One price, once, whatever you win</h1>
-      <p className="muted measure" style={{ fontSize: 18 }}>Claims firms charge 35% to 50% of your compensation. On a family of four owed £350 each, that is £490 to £700 gone. We charge for the document and nothing else.</p>
+      <h1 style={{ marginTop: 8 }}>One price, once, whatever you win</h1>
+      <p className="muted measure" style={{ fontSize: 18 }}>The check is free. A ready-to-send letter is £4.99. The pack is £9.99. Compensation goes from the airline to you.</p>
 
       <div className="ledger" style={{ marginTop: 28 }}>
         <div className="ledger-row">
@@ -47,14 +47,14 @@ export default function Pricing() {
       </div>
 
       <table className="tbl" style={{ marginTop: 32, maxWidth: 720 }}>
-        <thead><tr><th>Claim value</th><th>Claims firm keeps (35 to 50%)</th><th>FlightDelayCheck</th></tr></thead>
+        <thead><tr><th>Claim value</th><th>If a service took 35 to 50%</th><th>FlightDelayCheck</th></tr></thead>
         <tbody>
           <tr><td>1 passenger, £220</td><td className="mono">£77 to £110</td><td className="mono">£4.99</td></tr>
           <tr><td>2 passengers, £350 each</td><td className="mono">£245 to £350</td><td className="mono">£4.99</td></tr>
           <tr><td>4 passengers, £520 each</td><td className="mono">£728 to £1,040</td><td className="mono">£9.99 (pack)</td></tr>
         </tbody>
       </table>
-      <p className="small muted" style={{ marginTop: 10 }}>Fee ranges are the published rates of the largest UK claims firms in September 2026 (42% plus VAT; 35% plus 15% for legal action; 44% rising to 50%).</p>
+      <p className="small muted" style={{ marginTop: 10 }}>The percentage column is a simple 35 to 50% of the claim value, shown so the one-off document price is easy to compare. You can claim using the airline’s own form for free.</p>
 
       <div className="honest" style={{ marginTop: 26, maxWidth: 720 }}>
         <p style={{ margin: 0, fontWeight: 600 }}>And the £0 option is real.</p>

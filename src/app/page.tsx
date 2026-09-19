@@ -22,6 +22,30 @@ function topCause(causes: Record<string, number>): string {
   return CAUSE_LABELS[code] ?? "Not specified";
 }
 
+function IconSearch() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M16 16.5 20 20.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconLetter() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M7 9.5h10M7 13h7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+function IconSend() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M4 12 20 5l-6.5 15-2.2-6.4L4 12Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export default async function Home() {
   const since = new Date(Date.now() - 45 * 86_400_000).toISOString().slice(0, 10);
   const tape = await tapeDays(since, 20).catch(() => []);
@@ -31,8 +55,44 @@ export default async function Home() {
     <>
       <JsonLd data={[orgSchema(), websiteSchema(), productSchema(), faqSchema(HOME_FAQS)]} />
 
+      <section className="wrap hero">
+        <div>
+          <h1>See if you’re owed money for a delayed flight.</h1>
+          <p className="muted hero-sub">
+            Check the official flight record, free. If there is a claim, buy a letter for £4.99 and send it yourself.
+          </p>
+        </div>
+        <CheckForm />
+      </section>
+
+      <section className="wrap" style={{ paddingTop: 8, paddingBottom: 8 }}>
+        <div className="steps">
+          <div className="step">
+            <span className="step-icon"><IconSearch /></span>
+            <div>
+              <h3>Check free</h3>
+              <p className="small muted" style={{ margin: 0 }}>See whether the delay or cancellation qualifies. No sign-up, and the airline is not contacted.</p>
+            </div>
+          </div>
+          <div className="step">
+            <span className="step-icon"><IconLetter /></span>
+            <div>
+              <h3>Get a letter</h3>
+              <p className="small muted" style={{ margin: 0 }}>A ready-to-send UK261 or EU261 letter written from the record, for £4.99.</p>
+            </div>
+          </div>
+          <div className="step">
+            <span className="step-icon"><IconSend /></span>
+            <div>
+              <h3>Send it yourself</h3>
+              <p className="small muted" style={{ margin: 0 }}>You keep the claim and whatever the airline pays. We never take a share.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {track.length > 0 && (
-        <div className="tape" aria-label="Recent airport disruption days on record">
+        <div className="tape" aria-label="Recent airport disruption days on record" style={{ marginTop: 40 }}>
           <div className="tape-track">
             {track.map((d, i) => (
               <Link key={`${d.icao}-${d.day}-${i}`} href={`/airport-delays/${d.airport.slug}/${d.day}`} className="tape-item" aria-hidden={i >= tape.length} tabIndex={i >= tape.length ? -1 : undefined}>
@@ -43,39 +103,38 @@ export default async function Home() {
         </div>
       )}
 
-      {/* Hero: the question, then the pass */}
-      <section className="wrap" style={{ paddingTop: 44 }}>
-        <div className="hero-top">
-          <div>
-            <p className="eyebrow" style={{ marginBottom: 16 }}>Delayed 3 hours or more · cancelled · denied boarding</p>
-            <h1 className="cond" style={{ maxWidth: "14ch" }}>Was your flight late enough to be owed £220 to £520?</h1>
+      <section className="wrap" style={{ paddingTop: 56 }}>
+        <p className="eyebrow">How the check works</p>
+        <h2 style={{ marginTop: 8, marginBottom: 22 }}>Three public records, read together</h2>
+        <div className="strip">
+          <div className="card" style={{ boxShadow: "var(--shadow)" }}>
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>Flight</p>
+            <p className="stat">STA / ATA</p>
+            <p className="small muted" style={{ margin: 0 }}>Scheduled and actual gate or touchdown times, cancellation, diversion, and the distance that fixes your band. From AeroDataBox, flights in the last 12 months.</p>
           </div>
-          <div className="hero-side">
-            <p className="muted" style={{ fontSize: 18, maxWidth: "38ch", margin: 0 }}>
-              We read the flight&apos;s recorded arrival time, what Eurocontrol logged at both airports that day and the weather at the hour, then tell you whether there is a claim and how the airline will argue. Free.
-            </p>
-            <dl className="hero-facts">
-              <div><dt>Threshold</dt><dd>3h 00m at the gate</dd></div>
-              <div><dt>Per passenger</dt><dd>£220 / £350 / £520</dd></div>
-              <div><dt>Time limit</dt><dd>6 years (E&amp;W)</dd></div>
-              <div><dt>Claims firms keep</dt><dd>35% to 50%</dd></div>
-            </dl>
+          <div className="card" style={{ boxShadow: "var(--shadow)" }}>
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>Air traffic</p>
+            <p className="stat">ATFM min</p>
+            <p className="small muted" style={{ margin: 0 }}>Eurocontrol attributes every minute of arrival holding at every European airport to a cause, daily, since 2019. A blank day leaves the airline’s “extraordinary circumstances” line with nothing under it.</p>
+          </div>
+          <div className="card" style={{ boxShadow: "var(--shadow)" }}>
+            <p className="eyebrow" style={{ color: "var(--accent)" }}>Weather</p>
+            <p className="stat">METAR</p>
+            <p className="small muted" style={{ margin: 0 }}>Visibility, gusts, thunderstorms or snow at both airports around your flight. Airlines say “weather” a lot. This shows whether there was any.</p>
           </div>
         </div>
-        <div style={{ marginTop: 30 }}><CheckForm /></div>
       </section>
 
-      {/* One real check, shown as it comes out */}
-      <section className="wrap" style={{ paddingTop: 64 }}>
+      <section className="wrap" style={{ paddingTop: 56 }}>
         <div className="sample">
           <div>
             <p className="eyebrow">A real check</p>
-            <h2 style={{ marginTop: 8 }}>What comes back, in the airline&apos;s own units</h2>
+            <h2 style={{ marginTop: 8 }}>What comes back from the record</h2>
             <p className="muted" style={{ marginTop: 12, maxWidth: "44ch" }}>
               easyJet 8160, Ljubljana to Gatwick, 27 June 2026. Touchdown six hours and eight minutes after the scheduled arrival. Under 1,500 km, so £220 a seat under UK261 and €250 under EU261.
             </p>
             <p className="muted" style={{ maxWidth: "44ch" }}>
-              The board also shows the catch: Eurocontrol logged 5,876 minutes of weather holding at Gatwick that day, so the airline has a defence to try. Gatwick&apos;s own METAR at 12:50Z read CAVOK at 29°C. The letter asks them to prove the link.
+              Eurocontrol logged 5,876 minutes of weather holding at Gatwick that day, so the airline has a defence to try. Gatwick’s own METAR at 12:50Z read CAVOK at 29°C. The letter asks them to prove the link.
             </p>
             <p className="small muted" style={{ marginTop: 14 }}>Verdict and evidence are free. <Link href="/how-it-works">How each line is worked out</Link>.</p>
           </div>
@@ -96,42 +155,18 @@ export default async function Home() {
             <div className="board-row"><span className="board-key">Regulation</span><span className="board-val dim"><span className="flap-in" style={{ "--i": 5 } as React.CSSProperties}>UK261 + EU261</span></span></div>
             <div className="board-row"><span className="board-key">Per passenger</span><span className="board-val"><span className="flap-in" style={{ "--i": 6 } as React.CSSProperties}>£220</span></span></div>
             <div className="board-row"><span className="board-key">Airline defence risk</span><span className="board-val dim"><span className="flap-in" style={{ "--i": 7 } as React.CSSProperties}>MEDIUM</span></span></div>
-            <p className="small" style={{ color: "#7f8b98", margin: "12px 0 0" }}>EGKK 271250Z 13003KT 060V190 CAVOK 29/16 Q1016 · Eurocontrol EGKK 2026-06-27: W 5,876 min, 97 of 315 arrivals held.</p>
+            <p className="small" style={{ margin: "12px 0 0" }}>EGKK 271250Z 13003KT 060V190 CAVOK 29/16 Q1016 · Eurocontrol EGKK 2026-06-27: W 5,876 min, 97 of 315 arrivals held.</p>
           </div>
         </div>
       </section>
 
-      {/* The three records, as a strip rather than three cards */}
-      <section className="wrap" style={{ paddingTop: 64 }}>
-        <p className="eyebrow">How the check works</p>
-        <h2 style={{ marginTop: 8, marginBottom: 22 }}>Three public records, read together</h2>
-        <div className="strip">
-          <div>
-            <p className="strip-k">Record 1 · Flight</p>
-            <p className="stat">STA / ATA</p>
-            <p className="small muted">The flight by number and date: scheduled and actual gate or touchdown times, cancellation, diversion, and the great-circle distance that fixes your band. From AeroDataBox, flights in the last 12 months.</p>
-          </div>
-          <div>
-            <p className="strip-k">Record 2 · Air traffic</p>
-            <p className="stat">ATFM min</p>
-            <p className="small muted">Eurocontrol attributes every minute of arrival holding at every European airport to a cause, daily, since 2019: weather, ATC strike, ATC staffing, equipment. A blank day leaves the airline&apos;s &ldquo;extraordinary circumstances&rdquo; line with nothing under it.</p>
-          </div>
-          <div>
-            <p className="strip-k">Record 3 · Weather</p>
-            <p className="stat">METAR</p>
-            <p className="small muted">The observed visibility, gusts, thunderstorms or snow at both airports around your flight, straight from the airport reports. Airlines say &ldquo;weather&rdquo; a lot. This shows whether there was any.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Fare table */}
-      <section className="wrap" style={{ paddingTop: 64 }}>
+      <section className="wrap" style={{ paddingTop: 56 }}>
         <div className="two-col">
           <div>
             <p className="eyebrow">What it costs</p>
             <h2 style={{ marginTop: 8 }}>The verdict is free. The letter is £4.99.</h2>
-            <p className="muted" style={{ marginTop: 12, maxWidth: "42ch" }}>On a £350 medium-haul claim, a no-win-no-fee firm keeps £122 to £176. We keep £4.99 whatever you win, and the money goes straight from the airline to you.</p>
-            <p className="small muted" style={{ maxWidth: "42ch" }}>One-off payment, card by Stripe, documents on screen and by email the moment you pay. <Link href="/refunds">Refund policy</Link>.</p>
+            <p className="muted" style={{ marginTop: 12, maxWidth: "42ch" }}>One-off payment. Compensation goes from the airline to you. We never take a share of what you recover.</p>
+            <p className="small muted" style={{ maxWidth: "42ch" }}>Card by Stripe. Documents on screen and by email the moment you pay. <Link href="/refunds">Refund policy</Link>.</p>
           </div>
           <div className="ledger">
             <div className="ledger-row">
@@ -151,22 +186,16 @@ export default async function Home() {
               <span><strong>Every future flight checked the morning after it lands</strong><br /><span className="small muted">Verdict by email. Pay for a letter only if there is a claim.</span></span>
               <span className="ledger-val">£0.00</span>
             </div>
-            <div className="ledger-row" style={{ color: "var(--ink-3)" }}>
-              <span className="ledger-key">For comparison</span>
-              <span><strong style={{ fontWeight: 600 }}>Typical no-win-no-fee claims firm</strong><br /><span className="small">Plus an admin fee on some, deducted before you see the money.</span></span>
-              <span className="ledger-val">35% to 50%</span>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Flight Watch */}
-      <section className="wrap" style={{ paddingTop: 64 }}>
-        <div className="board watch-board">
+      <section className="wrap" style={{ paddingTop: 56 }}>
+        <div className="card watch-board">
           <div>
-            <p className="eyebrow" style={{ margin: 0 }}>Flight Watch · free</p>
-            <h2 style={{ color: "#fff", margin: "10px 0 10px" }} className="cond">Flying soon? Hand us the flight numbers and forget about it.</h2>
-            <p style={{ color: "#c9d1da", margin: 0, maxWidth: "50ch" }}>Paste the booking confirmation. The morning after each flight lands we read the record; if it was three hours late or cancelled, the verdict, the amount and the letter offer are in your inbox. Nothing to pay unless there is a claim.</p>
+            <p className="eyebrow" style={{ margin: 0, color: "var(--accent)" }}>Flight Watch · free</p>
+            <h2 style={{ margin: "10px 0 10px" }}>Flying soon? We can check the record after you land.</h2>
+            <p className="muted" style={{ margin: 0, maxWidth: "50ch" }}>Paste the booking confirmation. The morning after each flight lands we read the record. If it was three hours late or cancelled, the verdict, the amount and the letter offer are in your inbox. Nothing to pay unless there is a claim.</p>
             <div style={{ marginTop: 18 }}><Link href="/watch" className="btn btn-accent">Watch my flights</Link></div>
           </div>
           <div>
@@ -179,8 +208,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Airline index */}
-      <section className="wrap" style={{ paddingTop: 64 }}>
+      <section className="wrap" style={{ paddingTop: 56 }}>
         <div className="two-col" style={{ alignItems: "start" }}>
           <div>
             <p className="eyebrow">By airline</p>
@@ -199,8 +227,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Plain honesty */}
-      <section className="wrap" style={{ paddingTop: 64 }}>
+      <section className="wrap" style={{ paddingTop: 56 }}>
         <div className="notice">
           <span className="eyebrow">Note</span>
           <div>
@@ -210,8 +237,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* FAQ as a numbered record */}
-      <section className="wrap" style={{ paddingTop: 64 }}>
+      <section className="wrap" style={{ paddingTop: 56, paddingBottom: 24 }}>
         <div style={{ maxWidth: 860 }}>
           <p className="eyebrow">Questions people ask first</p>
           <h2 style={{ marginTop: 8, marginBottom: 18 }}>Before you check</h2>
@@ -222,29 +248,18 @@ export default async function Home() {
       </section>
 
       <style>{`
-        .hero-top { display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px; align-items: end; }
-        .hero-side { display: grid; gap: 22px; padding-bottom: 6px; }
-        .hero-facts { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; border-top: 1.5px solid var(--ink); padding-top: 14px; }
-        .hero-facts div { display: grid; gap: 2px; }
-        .hero-facts dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
-        .hero-facts dd { margin: 0; font-family: var(--font-mono); font-size: 15px; font-variant-numeric: tabular-nums; }
-        .sample { display: grid; grid-template-columns: 1fr 1.25fr; gap: 40px; align-items: start; }
-        .strip { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1.5px solid var(--ink); }
-        .strip > div { padding: 18px 22px 8px 0; border-right: 1px solid var(--line); }
-        .strip > div + div { padding-left: 22px; }
-        .strip > div:last-child { border-right: 0; }
-        .strip-k { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 10px; }
-        .strip .stat { margin: 0 0 12px; }
+        .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding-top: 48px; padding-bottom: 36px; }
+        .hero h1 { max-width: 14ch; }
+        .hero-sub { font-size: 18px; max-width: 38ch; margin: 16px 0 0; }
+        .sample { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: start; }
+        .strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .two-col { display: grid; grid-template-columns: 0.9fr 1.4fr; gap: 40px; align-items: start; }
         .watch-board { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; align-items: center; }
         @media (max-width: 900px) {
-          .hero-top, .sample, .two-col, .watch-board { grid-template-columns: 1fr; gap: 26px; }
-          .hero-facts { display: none; }
-          .hero-side p { font-size: 16px !important; }
+          .hero, .sample, .two-col, .watch-board { grid-template-columns: 1fr; gap: 24px; }
+          .hero { padding-top: 28px; }
+          .hero h1 { max-width: none; }
           .strip { grid-template-columns: 1fr; }
-          .strip > div { border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 0; }
-          .strip > div + div { padding-left: 0; }
-          .strip > div:last-child { border-bottom: 0; }
         }
       `}</style>
     </>
