@@ -25,7 +25,7 @@ Tables `fcc_apt_delay_daily`, `fcc_airports_covered` (anon read), `fcc_checks`, 
 `/api/checkout` creates a pending `fcc_purchases` row + Stripe session (inline price_data, `metadata.site = flightdelaycheck`, promo codes on). Both `/api/webhook` and `/api/purchase-status` (polled by `/r/[token]`) call `lib/fulfil.ts`, which is idempotent: generate letter (+ escalation for the pack), email via Resend if `FROM_EMAIL` is set, mark ready.
 
 ## Env
-`RAPIDAPI_KEY`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `STRIPE_SECRET_KEY` (AppealAFine account), `STRIPE_WEBHOOK_SECRET`, `FROM_EMAIL` (unset until a domain is verified in Resend), `NEXT_PUBLIC_SITE_URL`, `LETTER_MODEL`, `IP_HASH_SALT`.
+`RAPIDAPI_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY` (server-only names; the NEXT_PUBLIC_ variants also work), `ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `STRIPE_SECRET_KEY` (AppealAFine account), `STRIPE_WEBHOOK_SECRET`, `FROM_EMAIL` (unset until a domain is verified in Resend), `NEXT_PUBLIC_SITE_URL`, `LETTER_MODEL`, `IP_HASH_SALT`.
 
 ## Commit identity
 Always `git -c user.name="skillettsites" -c user.email="davidskillett@hotmail.co.uk" commit ...` (Vercel blocks other authors). Production branch: `main`.

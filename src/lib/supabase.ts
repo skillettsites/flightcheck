@@ -1,7 +1,8 @@
 // Thin PostgREST client using the anon key only. Reads of customer data go through
 // SECURITY DEFINER RPCs so the anon role can never list a table.
-const URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").replace(/\/$/, "");
-const KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+// Server-only: this module is imported by route handlers and server components, never shipped to the browser.
+const URL = (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "").replace(/\/$/, "");
+const KEY = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
 function headers(extra: Record<string, string> = {}) {
   return { apikey: KEY, Authorization: `Bearer ${KEY}`, "Content-Type": "application/json", ...extra };
