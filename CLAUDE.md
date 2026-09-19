@@ -30,5 +30,14 @@ Tables `fcc_apt_delay_daily`, `fcc_airports_covered` (anon read), `fcc_checks`, 
 ## Commit identity
 Always `git -c user.name="skillettsites" -c user.email="davidskillett@hotmail.co.uk" commit ...` (Vercel blocks other authors). Production branch: `main`.
 
+## Flight Watch (added 19 Sep, evening)
+`/watch` sign-up (paste a booking confirmation -> `/api/watch/parse` extracts flights with claude-haiku-4-5; or type them), rows in `fcc_watches` keyed by a per-signup `token`; `/watch/[token]` manages every watch for that email (RPC joins by email), `?confirm=1` confirms. Double opt-in only when `FROM_EMAIL` is set; otherwise watches go live directly. `/api/cron/watch` (every 2h, `Authorization: Bearer CRON_SECRET`, key also stored in `fcc_secrets` for the SECURITY DEFINER RPCs) runs `runCheck` on watches whose flight_date is before today (UTC), stores a `fcc_checks` row and emails the verdict (`lib/emails.ts`); the pay link prefills email and passengers on `/check/[token]?email=&pax=`.
+
+## Follow-ups
+`/api/cron/followups` daily 09:00: stage 1 at 28 days (did they reply), stage 2 at 56 (ADR is open, pre-filled link), stage 3 at 84 (outcome survey). Stops when `fcc_purchases.outcome` is set via `/api/outcome?token&outcome=`.
+
+## Airport disruption pages (the SEO engine)
+`/airport-delays` (index), `/airport-delays/[slug]` (airport hub: worst 25 days, recent 45, cause mix, airlines based there), `/airport-delays/[slug]/[YYYY-MM-DD]` (day page: Eurocontrol record, whole-day METAR, rank since 2019, other airports that day, FAQPage schema, check form prefilled with the date). Slugs live in `fcc_airports_covered.slug` (from the Eurocontrol name: "London - Gatwick" -> london-gatwick). A day page exists when `isSignificant()`: UK/IE >= 300 min, elsewhere >= 1000 min, or 40+ flights held. ~11,400 pages, ISR 30 days, top 150 pre-rendered. Sitemap: `/sitemap.xml` is an index over `/sitemaps/sitemap/{0..n}.xml` (0 = core + airlines + airport hubs, then 5,000 day URLs per file). Supabase caps responses at 1,000 rows: use `sbSelectAll` (Range pagination) for anything bigger.
+
 ## Not done yet
-Domain + Resend sender, airline landing pages (`/airlines/[code]`), EU-language versions, Canada APPR engine, FlightAware for flights older than 12 months, Bing/GSC submission, GA4.
+Domain + Resend sender (`FROM_EMAIL`), GSC/Bing/IndexNow submission (needs the domain), separate Stripe account (checkout shows "Appeal A Fine"), GA4, per-airline success-rate pages from `fcc_purchases.outcome`, Canada APPR engine, EU-language versions, FlightAware for flights older than 12 months, pack upgrade product for letter-only buyers, monthly Eurocontrol re-ingest (cron or manual).
