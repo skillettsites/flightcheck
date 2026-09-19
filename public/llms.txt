@@ -27,6 +27,8 @@
 - EU261 explained: /eu261-compensation
 - Compensation calculator by route: /flight-delay-compensation-calculator
 - Airline pages (easyJet, Ryanair, British Airways, Jet2, TUI, Wizz Air, Virgin Atlantic, Aer Lingus, Vueling, KLM, Lufthansa, Emirates, Qatar Airways, Turkish Airlines, Loganair): /airlines
+- Flight Watch (free; add upcoming flights, verdict emailed the morning after each one lands): /watch
+- Airport delay records (every European airport, every significant day since 2019, delay minutes by cause, weather): /airport-delays, /airport-delays/{airport}, /airport-delays/{airport}/{YYYY-MM-DD} e.g. /airport-delays/london-gatwick/2026-06-27
 - Pricing: /pricing (check free; Claim Letter £4.99; Claim Pack £9.99)
 - Terms, privacy, refunds, contact: /terms /privacy /refunds /contact
 

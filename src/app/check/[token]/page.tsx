@@ -17,7 +17,7 @@ async function load(token: string): Promise<CheckResult | null> {
   return rows[0]?.result ?? null;
 }
 
-export default async function CheckPage({ params, searchParams }: { params: Promise<{ token: string }>; searchParams: Promise<{ cancelled?: string }> }) {
+export default async function CheckPage({ params, searchParams }: { params: Promise<{ token: string }>; searchParams: Promise<{ cancelled?: string; email?: string; pax?: string }> }) {
   const { token } = await params;
   const sp = await searchParams;
   const r = await load(token);
@@ -32,7 +32,7 @@ export default async function CheckPage({ params, searchParams }: { params: Prom
 
       {canBuy && (
         <div style={{ marginTop: 22 }}>
-          <BuyBox checkToken={token} perPassenger={band?.amount ?? null} currency={band?.currency ?? null} defaultProduct={r.verdict === "borderline" ? "pack" : "letter"} />
+          <BuyBox checkToken={token} perPassenger={band?.amount ?? null} currency={band?.currency ?? null} defaultProduct={r.verdict === "borderline" ? "pack" : "letter"} initialEmail={sp.email ?? ""} initialPassengers={Number(sp.pax) || r.input.passengers || 1} />
         </div>
       )}
 
@@ -57,6 +57,11 @@ export default async function CheckPage({ params, searchParams }: { params: Prom
       )}
 
       <EvidencePanel r={r} />
+
+      <section className="card" style={{ marginTop: 28, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+        <div><p className="eyebrow">Flight Watch · free</p><h3 style={{ marginTop: 4 }}>Never check by hand again</h3><p className="small muted" style={{ margin: 0 }}>Add your upcoming flights and we check each one the morning after it lands. Verdict by email; letter only if you want it.</p></div>
+        <Link href="/watch" className="btn btn-primary">Watch my flights</Link>
+      </section>
 
       <section style={{ marginTop: 28 }} className="grid-2">
         <div className="card">

@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { PRODUCTS, type ProductId } from "@/lib/products";
 
-export default function BuyBox({ checkToken, perPassenger, currency, defaultProduct = "letter" }: { checkToken: string; perPassenger: number | null; currency: "GBP" | "EUR" | null; defaultProduct?: ProductId }) {
-  const [product, setProduct] = useState<ProductId>(defaultProduct);
+export default function BuyBox({ checkToken, perPassenger, currency, defaultProduct = "letter", initialEmail = "", initialPassengers = 1 }: { checkToken: string; perPassenger: number | null; currency: "GBP" | "EUR" | null; defaultProduct?: ProductId; initialEmail?: string; initialPassengers?: number }) {
+  const [product, setProduct] = useState<ProductId>(initialPassengers > 1 && defaultProduct === "letter" ? "pack" : defaultProduct);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(initialEmail);
   const [bookingRef, setBookingRef] = useState("");
-  const [passengers, setPassengers] = useState(1);
+  const [passengers, setPassengers] = useState(Math.min(9, Math.max(1, initialPassengers)));
   const [passengerNames, setPassengerNames] = useState("");
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);

@@ -86,12 +86,24 @@ export default function Home() {
       </section>
 
       <section className="wrap" style={{ paddingTop: 56 }}>
+        <div className="board" style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 24, alignItems: "center" }}>
+          <div>
+            <p className="eyebrow" style={{ margin: 0 }}>Flight Watch · free</p>
+            <h2 style={{ color: "#fff", margin: "8px 0 8px" }}>Flying soon? Add the flights and forget about it.</h2>
+            <p style={{ color: "#c9d1de", margin: 0, maxWidth: "52ch" }}>The morning after each flight lands we check the record. If it was 3 hours late or cancelled, the verdict, the amount and the letter are in your inbox. Nothing to pay unless there is a claim.</p>
+          </div>
+          <div style={{ justifySelf: "end" }}><Link href="/watch" className="btn btn-accent">Watch my flights</Link></div>
+        </div>
+      </section>
+
+      <section className="wrap" style={{ paddingTop: 56 }}>
         <p className="eyebrow">By airline</p>
         <h2 style={{ marginTop: 8, marginBottom: 6 }}>Your airline decides which flights are covered</h2>
         <p className="muted measure" style={{ marginBottom: 16 }}>A UK or EU airline is covered flying home to the UK. Emirates, Qatar, Delta or Turkish are covered only on the way out. Each airline page has the routes, bands, claim form and free escalation scheme.</p>
         <p style={{ display: "flex", flexWrap: "wrap", gap: "8px 10px" }}>
           {AIRLINE_PAGES.map((a) => <Link key={a.slug} href={`/airlines/${a.slug}`} className="btn btn-ghost" style={{ padding: "8px 14px", fontSize: 14 }}>{a.name}</Link>)}
           <Link href="/flight-delay-compensation-calculator" className="btn btn-ghost" style={{ padding: "8px 14px", fontSize: 14 }}>Compensation calculator</Link>
+          <Link href="/airport-delays" className="btn btn-ghost" style={{ padding: "8px 14px", fontSize: 14 }}>Airport delay records</Link>
         </p>
       </section>
 

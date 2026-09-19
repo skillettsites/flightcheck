@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Disruption = "delay" | "cancellation" | "denied_boarding";
 
-export default function CheckForm({ compact = false }: { compact?: boolean }) {
+export default function CheckForm({ compact = false, defaultDate = "" }: { compact?: boolean; defaultDate?: string }) {
   const router = useRouter();
   const [flight, setFlight] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(defaultDate);
   const [disruption, setDisruption] = useState<Disruption>("delay");
   const [noticeDays, setNoticeDays] = useState<string>("");
   const [rerouted, setRerouted] = useState<string>("");
@@ -16,6 +16,13 @@ export default function CheckForm({ compact = false }: { compact?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get("flight")) setFlight(q.get("flight") as string);
+    if (q.get("date")) setDate(q.get("date") as string);
+    const d = q.get("disruption");
+    if (d === "cancellation" || d === "denied_boarding" || d === "delay") setDisruption(d);
+  }, []);
   const maxDate = new Date().toISOString().slice(0, 10);
   const minDate = new Date(Date.now() - 365 * 86_400_000).toISOString().slice(0, 10);
 
