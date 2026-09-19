@@ -40,6 +40,8 @@ export async function sbRpc<T>(fn: string, args: Record<string, unknown>): Promi
     console.error("supabase rpc failed", fn, res.status, await res.text().catch(() => ""));
     return [];
   }
-  const data = await res.json();
+  const text = await res.text();
+  if (!text.trim()) return []; // void RPCs answer 204 with an empty body
+  const data = JSON.parse(text);
   return Array.isArray(data) ? (data as T[]) : data === null ? [] : [data as T];
 }
